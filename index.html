@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d3426">
+<title>Rapor Digital MTs — RDM</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📗</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f2efe3;color:#1c2a22;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+.hidden{display:none!important}
+::selection{background:#cde7d5}
+::-webkit-scrollbar{height:10px;width:10px}
+::-webkit-scrollbar-thumb{background:#c9c2a4;border-radius:99px;border:2px solid #f2efe3}
+
+/* ===== HALAMAN LOGIN ===== */
+#loginScreen{position:fixed;inset:0;z-index:70;display:flex;background:#fff;overflow-y:auto}
+.login-left{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;min-width:0}
+.login-card{width:100%;max-width:400px;background:#fff;border:1px solid #e0dac2;border-radius:16px;padding:26px 26px 22px;box-shadow:0 18px 44px -22px rgba(20,30,22,.25)}
+.lm-logo{display:none;width:96px;height:96px;border-radius:50%;background:#fff;border:1px solid #e0dac2;overflow:hidden;align-items:center;justify-content:center;margin:0 auto 14px}
+.lm-logo img{width:100%;height:100%;object-fit:contain;padding:10px}
+.lm-logo.txt{background:#0d3426;color:#efe7cd;font-family:'Source Serif 4',serif;font-weight:700;font-size:34px}
+.login-card h5{margin:0;font-size:13px;font-weight:600;color:#65755f;letter-spacing:.02em}
+.login-card h4{margin:2px 0 6px;font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:#12301d}
+.login-desc{margin:0 0 16px;font-size:13px;color:#65755f}
+.lf{display:flex;flex-direction:column;gap:4px}
+.lf>span{font-size:11px;font-weight:700;color:#65755f;letter-spacing:.03em;text-transform:uppercase}
+.in-grp{display:flex;align-items:stretch}
+.in-ico{width:42px;flex:0 0 auto;display:grid;place-items:center;border:1px solid #cfc8a8;border-right:0;border-radius:8px 0 0 8px;background:#f5f2e4;color:#5d685a}
+.in-grp input,.in-grp select{flex:1;min-width:0;border:1px solid #cfc8a8;border-radius:0 8px 8px 0;padding:9px 10px;font-size:13.5px;background:#fff}
+.in-grp input.mid{border-radius:0;border-right:0}
+.in-eye{width:42px;flex:0 0 auto;border:1px solid #cfc8a8;border-left:0;border-radius:0 8px 8px 0;background:#f5f2e4;display:grid;place-items:center;color:#5d685a}
+.in-eye:hover{background:#efeadd;color:#1c2a22}
+.in-grp input:focus,.in-grp select:focus{outline:0;border-color:#4d9c68;box-shadow:0 0 0 3px rgba(77,156,104,.13)}
+.login-err{display:none;background:#f9ede9;border:1px solid #d9b0a6;color:#8f2f1f;font-size:12.5px;border-radius:8px;padding:7px 10px;margin:14px 0 10px}
+.login-err.on{display:block}
+.login-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.forgot{background:none;border:0;padding:0;font-size:12.5px;font-weight:600;color:#165c3c;text-decoration:underline;text-underline-offset:2px}
+.forgot:hover{color:#196c47}
+.login-hint{margin:14px 0 0;font-size:11.5px;color:#7d8574;line-height:1.65}
+.login-foot{margin:12px 0 0;font-size:11px;color:#8a927f;line-height:1.6}
+.login-right{flex:1.05;position:relative;background:#eef2e4;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.login-right::before{content:'';position:absolute;width:420px;height:420px;border:1.5px solid #cfdec5;border-radius:50%;right:-140px;top:-140px}
+.login-right::after{content:'';position:absolute;width:260px;height:260px;border:1.5px solid #cfdec5;border-radius:50%;left:-70px;bottom:-90px}
+.login-art{width:100%;display:flex;align-items:center;justify-content:center}
+.login-art svg,.login-art img{width:88%;max-width:560px;display:block;position:relative}
+@keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+.login-card.shake{animation:shake .4s}
+@media(max-width:880px){
+  #loginScreen{flex-direction:column}
+  .login-right{display:none}
+  .lm-logo{display:flex}
+  .login-left{padding:32px 16px}
+}
+
+/* ===== KERANGKA ===== */
+#app{display:flex;min-height:100vh}
+#sidebar{width:232px;flex:0 0 232px;background:#0d3426;color:#cfdccf;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;gap:11px;align-items:center;padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.09)}
+.brand-mark{width:38px;height:38px;border-radius:10px;background:#efe7cd;color:#0d3426;display:grid;place-items:center;font-family:'Source Serif 4',serif;font-weight:700;font-size:20px}
+.brand-txt b{display:block;color:#f3eedd;font-size:14.5px}
+.brand-txt span{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8fae9a}
+nav#nav{padding:8px 12px;flex:1}
+.nav-sec{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#6f8f7c;padding:14px 10px 5px}
+.nav-it{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#c4d4c5;text-align:left;margin:1px 0}
+.nav-it:hover{background:#123c2b;color:#eef3e9}
+.nav-it.on{background:#17472f;color:#f3eedd;box-shadow:inset 3px 0 0 #d8b25c}
+.nav-it.on svg{color:#d8b25c}
+svg.lucide{width:16px;height:16px;flex:0 0 auto}
+.side-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.09);font-size:11.5px;color:#8fae9a;line-height:1.5}
+.side-user{display:flex;gap:9px;align-items:center;margin-bottom:10px;color:#cfdccf}
+.side-user svg{color:#d8b25c}
+.side-user b{display:block;font-size:12.5px;color:#f3eedd;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side-user span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8fae9a}
+.side-meta{margin-bottom:10px}
+.side-meta .ver{color:#5f7d6c}
+#storSize{color:#cfdccf;font-weight:700}
+.syncdot{width:8px;height:8px;border-radius:99px;background:#8fd3a5;display:inline-block;flex:0 0 auto}
+.syncdot.busy{background:#d8b25c}
+.syncdot.off{background:#e2a08e}
+#syncTxt{color:#8fae9a;font-size:11px}
+.syncline{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.out-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:transparent;border:1px solid rgba(255,255,255,.18);color:#cfdccf;padding:6px;border-radius:8px;font-size:12px;font-weight:600}
+.out-btn:hover{background:#17472f;color:#f3eedd}
+
+#appbar{display:none;align-items:center;gap:12px;background:#0d3426;color:#f3eedd;padding:9px 14px;position:sticky;top:0;z-index:40}
+#appbar .ap-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0}
+#appbar .ap-brand .brand-mark{width:30px;height:30px;font-size:16px;border-radius:8px}
+#appbar .ap-brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ap-act{background:transparent;border:0;color:#f3eedd;width:40px;height:40px;border-radius:9px;display:grid;place-items:center}
+.ap-act:active{background:#17472f}
+#navBtn{margin-right:auto}
+.ap-act svg,#navBtn svg{width:20px;height:20px}
+#veil{position:fixed;inset:0;background:rgba(10,20,14,.5);z-index:55;display:none}
+body.nav-open #veil{display:block}
+
+#main{flex:1;min-width:0;padding:26px 32px 70px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.ph-t h1{margin:0;font-size:23px;font-weight:800;letter-spacing:-.2px}
+.ph-t p{margin:3px 0 0;color:#65755f;font-size:13px}
+.ph-a{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.lgx{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+
+/* ===== KOMPONEN ===== */
+.card{background:#fbf9f1;border:1px solid #e0dac2;border-radius:14px;box-shadow:0 1px 2px rgba(28,42,34,.04)}
+.card.pad{padding:18px 20px}
+.c-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.c-head h2{margin:0;font-size:15px;font-weight:700}
+.c-foot{margin-top:12px;display:flex;justify-content:flex-end}
+.empty{padding:28px 18px;text-align:center;color:#7d8574}
+.btn{display:inline-flex;align-items:center;gap:7px;border-radius:9px;border:1px solid transparent;padding:8px 14px;font-weight:600;font-size:13px;background:transparent}
+.btn.primary{background:#165c3c;color:#f6f2e2}
+.btn.primary:hover{background:#196c47}
+.btn.ghost{color:#1c2a22;border-color:#cfc8a8}
+.btn.ghost:hover{background:#efeadd}
+.btn.danger{background:#a33726;color:#fbf3ee}
+.btn.danger-outline{color:#a33726;border-color:#d9b0a6}
+.btn.danger-outline:hover{background:#f7e8e4}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:8px}
+.ibtn{width:28px;height:28px;border-radius:7px;border:1px solid #cfc8a8;background:#fff;display:inline-flex;align-items:center;justify-content:center;color:#4c5c50;vertical-align:middle}
+.ibtn:hover{background:#f0ecdc}
+.ibtn:disabled{opacity:.35;cursor:default}
+.ibtn.danger{color:#a33726;border-color:#d9b0a6}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld>span{font-size:11.5px;font-weight:600;color:#65755f}
+.fld input,.fld select,.fld textarea,.tinp{border:1px solid #cfc8a8;background:#fff;border-radius:8px;padding:8px 10px;font-size:13.5px}
+.fld input:focus,.fld select:focus,.fld textarea:focus,.tinp:focus{outline:0;border-color:#4d9c68;box-shadow:0 0 0 3px rgba(77,156,104,.15)}
+.tinp{width:100%}
+.fld textarea{resize:vertical}
+.fld.sm>span{font-size:10.5px}
+.fld.sm input,.fld.sm select{padding:6px 9px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.form-grid .full{grid-column:1/-1}
+.form-foot{grid-column:1/-1;display:flex;justify-content:flex-end}
+
+.logo-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.logo-cell{display:flex;flex-direction:column;gap:6px;min-width:0}
+.logo-cell>span{font-size:11.5px;font-weight:600;color:#65755f}
+.logo-ctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.logo-prev{width:70px;height:70px;border:1.5px dashed #cfc8a8;border-radius:12px;background:#fff;display:grid;place-items:center;overflow:hidden;flex:0 0 auto}
+.logo-prev img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.logo-prev svg{width:26px;height:26px;color:#b8b19a}
+.logo-prev.art-prev{width:152px;height:92px}
+.logo-btns{display:flex;flex-direction:column;gap:8px;min-width:0;flex:1}
+.art-url{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.art-url input{flex:1;min-width:200px;border:1px solid #cfc8a8;border-radius:8px;padding:7px 10px;background:#fff;font-size:12.5px}
+
+.kscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;border-collapse:collapse;min-width:560px}
+.tbl th{background:#f5f2e4;text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#75816d;font-weight:700;padding:9px 10px;border-bottom:1px solid #d9d2b4;white-space:nowrap}
+.tbl td{padding:8px 10px;border-bottom:1px solid #e6e0ca;vertical-align:middle}
+.tbl tbody tr:hover{background:#f4f0de}
+.tbl .num{color:#8a927f;font-variant-numeric:tabular-nums;width:40px}
+.mono{font-variant-numeric:tabular-nums}
+.row-acts{white-space:nowrap;text-align:right}
+.row-acts .ibtn{margin-left:4px}
+.dim{color:#7d8574}
+.sm2{font-size:11.5px}
+.empty-cell{padding:26px;text-align:center;color:#7d8574}
+
+.chip{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;background:#efeada;border:1px solid #ddd6ba;color:#5d685a;border-radius:99px;padding:2.5px 9px;white-space:nowrap}
+.chip.ok{background:#eef7ef;border-color:#b9d3bf;color:#1e6b3f}
+.chip.bad{background:#f9ede9;border-color:#d9b0a6;color:#8f2f1f}
+.badge{font-size:11.5px;font-weight:700;border-radius:99px;padding:2px 9px;background:#efeada;color:#5d685a;font-variant-numeric:tabular-nums}
+.badge.pA,.lg.pA{background:#eef7ef;color:#1e6b3f}
+.badge.pB,.lg.pB{background:#eef6f8;color:#2a6577}
+.badge.pC,.lg.pC{background:#f9f4e4;color:#8a6d1f}
+.badge.pD,.lg.pD{background:#f9ede9;color:#8f2f1f}
+.lg{display:inline-flex;font-size:11.5px;font-weight:700;border-radius:99px;padding:2px 9px;font-variant-numeric:tabular-nums}
+
+/* ===== DASHBOARD ===== */
+.dash{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,.9fr);gap:18px;align-items:start}
+.dash-main,.dash-side{display:grid;gap:18px}
+.prog-row{display:grid;grid-template-columns:minmax(140px,190px) 1fr 118px;gap:14px;align-items:center;padding:11px 0;border-bottom:1px dashed #ddd6ba}
+.prog-row:last-child{border-bottom:0}
+.prog-k{display:flex;flex-direction:column;gap:2px;min-width:0}
+.prog-kelas{background:none;border:0;padding:0;font-weight:700;color:#1c2a22;font-size:14px;text-align:left}
+.prog-kelas:hover{color:#165c3c;text-decoration:underline}
+.prog-sub{font-size:11px;color:#7d8574}
+.prog-bar{height:10px;background:#ece7d4;border:1px solid #ddd6ba;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:#2e7d4f}
+.prog-val{text-align:right}
+.prog-val b{display:block;font-size:16px;font-variant-numeric:tabular-nums}
+.prog-val span{font-size:11px;color:#7d8574}
+.ready-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;border:1px solid #e6e0ca;background:#fff;margin-bottom:6px;cursor:pointer;width:100%;text-align:left}
+.ready-row:hover{border-color:#b9d3bf;background:#f2f8f1}
+.rr-nama{flex:1;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rr-kelas{font-size:11.5px;color:#7d8574}
+.mini-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#8a927f;font-weight:700;margin-bottom:8px}
+.mini-logo{width:48px;height:48px;object-fit:contain;background:#fff;border:1px solid #e0dac2;border-radius:10px;padding:4px;margin-bottom:10px}
+.mini-nama{font-family:'Source Serif 4',serif;font-size:19px;font-weight:600;margin-bottom:8px}
+.idn-mini dl{margin:0 0 12px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:12.5px}
+.idn-mini dt{color:#7d8574}
+.idn-mini dd{margin:0;font-weight:600;min-width:0;overflow-wrap:break-word}
+.qbtn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;border:1px solid #e6e0ca;border-radius:9px;background:#fff;margin-bottom:7px;font-weight:600;font-size:13px;color:#1c2a22}
+.qbtn:hover{background:#f2f8f1;border-color:#b9d3bf}
+.qbtn svg{color:#2e7d4f}
+
+/* ===== NILAI ===== */
+.ctl{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;padding:14px 16px;margin-bottom:16px}
+.ctl .grow{flex:1;min-width:220px}
+.ntblui{min-width:max-content}
+.ntblui td{padding:4px 5px}
+.sticky-col{position:sticky;left:0;background:#fbf9f1;z-index:1;min-width:172px;border-right:1px solid #e6e0ca}
+.tbl tbody tr:hover .sticky-col{background:#f4f0de}
+.tbl th.sticky-col{background:#f5f2e4;z-index:2}
+.tbl tfoot td{border-top:2px solid #d9d2b4;background:#f5f2e4;font-size:12.5px}
+.tbl tfoot .sticky-col{background:#f5f2e4}
+.ninp,.ainp{width:58px;text-align:center;border:1.5px solid #d5cfb2;border-radius:7px;padding:5px 2px;font-weight:700;font-size:13px;background:#fff;font-variant-numeric:tabular-nums}
+.ninp:focus,.ainp:focus{outline:0;border-color:#4d9c68;box-shadow:0 0 0 3px rgba(77,156,104,.14)}
+.ninp::-webkit-outer-spin-button,.ninp::-webkit-inner-spin-button,.ainp::-webkit-outer-spin-button,.ainp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ninp{-moz-appearance:textfield;appearance:textfield}
+.ninp.pk{border-color:#e0daca;color:#9aa190}
+.ninp.pA{border-color:#9fc9ae;color:#1e6b3f;background:#eef7ef}
+.ninp.pB{border-color:#a9cbd8;color:#2a6577;background:#eef6f8}
+.ninp.pC{border-color:#d3bd8c;color:#8a6d1f;background:#f9f4e4}
+.ninp.pD{border-color:#d9a79d;color:#8f2f1f;background:#f9ede9}
+.avg{text-align:center;font-weight:700;font-variant-numeric:tabular-nums;color:#4c5c50}
+
+/* ===== KELAS / SISWA ===== */
+.kpanel{margin-bottom:16px;overflow:hidden}
+.khead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid #e6e0ca;background:#f6f3e5}
+.kname{min-width:110px}
+.kname .tinp{font-weight:800;font-size:15px;border-color:transparent;background:transparent;padding:4px 8px}
+.kname .tinp:hover{border-color:#cfc8a8;background:#fff}
+.kname .tinp:focus{border-color:#4d9c68;background:#fff}
+.kwali{display:flex;gap:8px;flex:1;min-width:260px}
+.kwali .tinp{padding:6px 9px;font-size:12.5px}
+.kfoot{display:flex;gap:8px;padding:10px 16px;border-top:1px solid #e6e0ca;background:#f9f7ec}
+.kpanel .kscroll .tbl{min-width:620px}
+
+/* ===== DESKRIPSI ===== */
+.desk-ctl{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
+.desk-ctl .fld{flex:1 1 180px}
+.desk-row{display:grid;grid-template-columns:250px 1fr;gap:14px;padding:12px 0;border-bottom:1px dashed #ddd6ba;position:relative}
+.desk-row:last-child{border-bottom:0}
+.desk-id{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.dtx{width:100%;border:1px solid #cfc8a8;border-radius:8px;padding:8px 10px;font-size:13px;line-height:1.5;resize:vertical;background:#fff}
+.dtx:focus{outline:0;border-color:#4d9c68;box-shadow:0 0 0 3px rgba(77,156,104,.14)}
+.saveflag{position:absolute;right:2px;top:0;font-size:10.5px;color:#2e7d4f;opacity:0;transition:opacity .3s}
+.saveflag.on{opacity:1}
+
+/* ===== EKSKUL ===== */
+.echips{display:flex;flex-wrap:wrap;gap:7px}
+.echip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #d5cfb2;border-radius:99px;padding:4px 6px 4px 12px;font-weight:600;font-size:12.5px}
+.echip button{border:0;background:#efeada;width:19px;height:19px;border-radius:99px;display:grid;place-items:center}
+.echip button svg{width:12px;height:12px;color:#8f2f1f}
+.echip button:hover{background:#f3d9d3}
+.eadd{display:flex;gap:8px;margin-top:10px}
+.eadd input{flex:1;min-width:0;border:1px solid #cfc8a8;border-radius:8px;padding:7px 10px;background:#fff}
+.etable .tbl{min-width:1180px}
+.eslot{display:grid;grid-template-columns:minmax(120px,1fr) 104px minmax(120px,1.2fr);gap:6px;min-width:330px}
+.eslot select,.eslot input{border:1px solid #cfc8a8;border-radius:7px;padding:5px 7px;font-size:12.5px;background:#fff;min-width:0}
+
+/* ===== CETAK ===== */
+.cetak-grid{display:grid;grid-template-columns:290px minmax(0,1fr);gap:18px;align-items:stretch}
+.cplist{display:flex;flex-direction:column;min-height:0}
+.cp-ctl{padding:12px 14px;border-bottom:1px solid #e6e0ca}
+.cp-list{overflow-y:auto;padding:10px}
+.cp-row{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid #e6e0ca;background:#fff;border-radius:9px;padding:8px 10px;margin-bottom:6px}
+.cp-row:hover{border-color:#b9d3bf}
+.cp-row.on{border-color:#2e7d4f;background:#f0f7f0;box-shadow:inset 0 0 0 1px #2e7d4f}
+.cp-nama{flex:1;font-weight:600;font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cpview{display:flex;flex-direction:column;min-width:0}
+.bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 16px;margin-bottom:14px}
+.bar-t{display:flex;align-items:center;gap:10px;flex:1;min-width:180px;flex-wrap:wrap}
+.bar-t b{font-size:14px}
+.bar-a{display:flex;gap:8px;flex-wrap:wrap}
+.stage{overflow:auto;padding:10px 10px 44px;background:#e9e4d2;border-radius:14px;border:1px solid #d9d2b4;min-height:400px}
+.sheet-wrap{display:flex;justify-content:center;margin:14px 0 0}
+.sheet-wrap .sheet{margin:0;transform-origin:top center}
+
+.switch{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:#47554c;cursor:pointer;user-select:none;padding:4px 0}
+.switch input{display:none}
+.switch span{width:34px;height:19px;border-radius:99px;background:#cfc8a8;position:relative;transition:.18s;flex:0 0 auto}
+.switch span::after{content:'';position:absolute;top:2.5px;left:3px;width:14px;height:14px;border-radius:99px;background:#fff;transition:.18s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.switch input:checked+span{background:#2e7d4f}
+.switch input:checked+span::after{left:17px}
+
+/* ===== PENGATURAN ===== */
+.pset{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
+.pred-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pred-inputs{display:flex;gap:12px;flex-wrap:wrap}
+.pred-inputs .fld{width:110px}
+.pred-inputs input{width:100%;text-align:center;font-weight:700}
+
+/* ===== MODAL & TOAST ===== */
+.overlay{position:fixed;inset:0;background:rgba(18,26,21,.45);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px;z-index:60;overflow-y:auto}
+.modal{background:#fbf9f1;border-radius:16px;border:1px solid #e0dac2;box-shadow:0 24px 60px -18px rgba(15,25,19,.45);width:520px;max-width:100%;padding:22px 24px;animation:pop .18s ease-out}
+@keyframes pop{from{transform:translateY(10px);opacity:0}}
+.mform h3{margin:0 0 14px;font-size:17px;font-weight:800}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mgrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.mgrid .wide2{grid-column:1/-1}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
+.chk{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13px}
+#toastRoot{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:80}
+.toast{display:flex;align-items:center;gap:9px;background:#1c2a22;color:#f0eee2;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 10px 30px -8px rgba(15,25,19,.5);animation:tin .25s ease-out;border-left:3px solid #2e7d4f}
+.toast svg{color:#8fd3a5}
+.toast.err{border-left-color:#c25b45}.toast.err svg{color:#e2a08e}
+.toast.warn{border-left-color:#c9a24b}
+.toast.out{opacity:0;transform:translateY(6px);transition:.3s}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}}
+
+/* ===== DOKUMEN RAPOR ===== */
+#printArea{display:none}
+.sheet{background:#fff;width:210mm;min-height:296mm;margin:0 auto;padding:12mm 12mm;font-family:'Source Serif 4',serif;color:#151a16;font-size:10.2pt;line-height:1.45;position:relative;box-shadow:0 12px 34px -14px rgba(20,30,22,.4)}
+.kop{display:flex;align-items:center;gap:3mm}
+.koplogo{width:21mm;height:21mm;flex:0 0 auto;object-fit:contain}
+.kop-c{flex:1;text-align:center;min-width:0}
+.kop1{font-size:14.5pt;font-weight:700;letter-spacing:.02em}
+.kop2{font-size:9.5pt;margin-top:1px}
+.kop3{font-size:8.5pt}
+.koprule{border-top:2.6pt solid #151a16;margin-top:2.5mm}
+.koprule.t2{border-top-width:.9pt;margin-top:1.5px;margin-bottom:3.5mm}
+.rtitle{text-align:center;font-size:14pt;font-weight:700;letter-spacing:.12em;margin:0 0 2.5mm}
+.idn2{width:100%;border-collapse:collapse;margin:0 0 1mm}
+.idn2 td{border:1pt solid #151a16;padding:1.3mm 2mm;vertical-align:top;font-size:9.5pt}
+.idn2 td.ik{background:#f2efe0;width:44mm;font-weight:600;font-size:9pt}
+.idn2 td.iv{min-width:36mm}
+.sec{font-weight:700;font-size:10.5pt;margin:4mm 0 1.5mm}
+.rtbl{width:100%;border-collapse:collapse}
+.rtbl th{border:1pt solid #151a16;padding:1.4mm 2mm;font-size:9pt;font-weight:700;background:#f2efe4}
+.rtbl td{border:1pt solid #151a16;padding:1.4mm 2mm;vertical-align:top;font-size:9pt}
+.rno{width:7mm;text-align:center}
+.rmp{width:44mm}
+.rval,.rvc{width:20mm;text-align:center;font-variant-numeric:tabular-nums}
+.abl{width:100%;border-collapse:collapse;margin-left:0;border:1pt solid #151a16}
+.abl td{padding:.8mm 1.5mm;font-size:9.5pt}
+.box{border:1pt solid #151a16;padding:2mm 3mm;min-height:14mm;font-size:9.5pt}
+.box.kiri{min-height:8mm}
+.ttd{margin-top:8mm}
+.ttd-kanan{text-align:left;font-size:10pt;margin-bottom:4mm;padding-left:calc(100% - 64mm)}
+.ttd-cols{display:flex;justify-content:space-between;padding:0 4mm;margin-bottom:7mm}
+.ttd-c{width:60mm;text-align:left;font-size:10pt}
+.gap{height:16mm}
+.ttd-mid{text-align:center;font-size:10pt;position:relative;width:80mm;margin:0 auto}
+.ttd-mid .gap{height:13mm}
+.nm{font-weight:700}
+.nm .nm-line{text-decoration:underline;text-underline-offset:2px}
+.nm .nip{display:block;font-weight:400;font-size:8.5pt}
+.stamp{position:absolute;width:30mm;height:30mm;top:-9mm;left:50%;margin-left:-34mm;transform:rotate(-8deg);opacity:.85;pointer-events:none}
+
+@media print{
+ #app,#loginScreen,#toastRoot,.overlay,#veil{display:none!important}
+ body{background:#fff}
+ #printArea{display:block!important}
+ .sheet-wrap{display:block;height:auto!important}
+ .sheet{transform:none!important}
+ #printArea .sheet{width:auto;min-height:268mm;margin:0;padding:2mm 3mm;box-shadow:none;break-after:page}
+ #printArea .sheet:last-child{break-after:auto}
+ @page{size:A4;margin:9mm}
+}
+
+/* ===== CETAK LANSKAP: daftar nilai & leger ===== */
+.dnl{background:#fff;width:297mm;margin:0 auto;padding:10mm;font-family:'Plus Jakarta Sans',sans-serif;color:#151a16;font-size:10pt;box-shadow:0 12px 34px -14px rgba(20,30,22,.4)}
+.dnl .ltbl{width:100%;border-collapse:collapse;margin-top:2mm}
+.dnl .ltbl th,.dnl .ltbl td{border:.6pt solid #151a16;padding:1mm 1.5mm;font-size:8.5pt;vertical-align:top;word-break:break-word}
+.dnl .ltbl th{background:#f2efe4;font-weight:700}
+.dnl .c{text-align:center}
+.dnl .b{font-weight:700}
+.dnl .nm2{font-weight:600}
+.dnl .ttd2{margin-top:8mm;margin-left:auto;width:72mm;text-align:left;font-size:10pt;line-height:1.5}
+@media print{
+  body.print-lanskap #printArea .dnl{width:auto;padding:2mm 4mm;box-shadow:none;min-height:0}
+}
+
+/* ===== RESPONSIF ===== */
+@media(max-width:1200px){ .cetak-grid{grid-template-columns:1fr} }
+@media(max-width:1100px){ .dash{grid-template-columns:1fr} }
+@media(max-width:1000px){ .pset{grid-template-columns:1fr} }
+@media(max-width:960px){
+ #app{flex-direction:column}
+ #appbar{display:flex}
+ #sidebar{position:fixed;top:0;left:0;bottom:0;height:100%;transform:translateX(-102%);transition:transform .22s ease;z-index:56;box-shadow:0 0 44px rgba(0,0,0,.4)}
+ body.nav-open #sidebar{transform:none}
+ .side-foot{display:none}
+ #main{padding:16px 14px 64px}
+ .page-head h1{font-size:19px}
+ .desk-row{grid-template-columns:1fr}
+ .cp-ctl .fld{width:100%}
+ .cp-list{max-height:34vh}
+ .stage{padding:8px 6px 32px}
+ .sheet-wrap{margin-top:8px}
+}
+@media(max-width:720px){
+ .form-grid,.mgrid,.mgrid2{grid-template-columns:1fr}
+ .logo-grid{grid-template-columns:1fr}
+ .overlay{padding:12px}
+ .modal{width:100%;max-height:calc(100vh - 32px);overflow-y:auto}
+ .khead{flex-direction:column;align-items:stretch}
+ .kname{width:100%}
+ .kwali{flex-direction:column;min-width:0;width:100%}
+ .kpanel .kscroll .tbl{min-width:440px}
+ .t-siswa th:nth-child(2),.t-siswa td:nth-child(2),
+ .t-siswa th:nth-child(3),.t-siswa td:nth-child(3),
+ .t-siswa th:nth-child(5),.t-siswa td:nth-child(5){display:none}
+ .t-siswa{min-width:430px}
+ .t-mapel th:nth-child(3),.t-mapel td:nth-child(3){display:none}
+ .t-mapel{min-width:440px}
+ .t-abs th:nth-child(1),.t-abs td:nth-child(1){display:none}
+ .t-abs{min-width:520px}
+ .pred-inputs .fld{width:96px}
+ .desk-ctl .fld{flex:1 1 46%}
+}
+@media(max-width:640px){
+ .prog-row{grid-template-columns:1fr auto;gap:8px}
+ .prog-k{grid-row:1;grid-column:1}
+ .prog-val{grid-row:1;grid-column:2}
+ .prog-bar{grid-column:1/-1;grid-row:2}
+ .etable th:nth-child(5),.etable td:nth-child(5){display:none}
+ .etable .tbl{min-width:460px}
+ .eslot{grid-template-columns:1fr;min-width:0}
+ #toastRoot{left:12px;right:12px;bottom:12px}
+ .toast{width:100%}
+ .bar{gap:10px;padding:10px 12px}
+ .bar .btn{padding:8px 11px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HALAMAN LOGIN ================= -->
+<div id="loginScreen" class="hidden">
+  <div class="login-left">
+    <form id="loginForm" class="login-card" autocomplete="on">
+      <div id="lmLogo" class="lm-logo" aria-hidden="true"></div>
+      <h5>Rapor Digital Madrasah (RDM)</h5>
+      <h4 id="loginH4">MADRASAH TSANAWIYAH</h4>
+      <p class="login-desc">Silahkan login menggunakan akun Anda</p>
+
+      <label class="lf"><span>Username</span>
+        <div class="in-grp">
+          <div class="in-ico"><i data-lucide="user-round"></i></div>
+          <input id="loginU" autocomplete="username" placeholder="Username" required>
+        </div></label>
+
+      <label class="lf" style="margin-top:12px"><span>Password</span>
+        <div class="in-grp">
+          <div class="in-ico"><i data-lucide="key-round"></i></div>
+          <input id="loginP" class="mid" type="password" autocomplete="current-password" placeholder="Password" required>
+          <button type="button" id="pwToggle" class="in-eye" aria-label="Tampilkan sandi"><i data-lucide="eye"></i></button>
+        </div></label>
+
+      <label class="lf" style="margin-top:12px"><span>Tahun Ajaran</span>
+        <div class="in-grp">
+          <div class="in-ico"><i data-lucide="calendar"></i></div>
+          <select id="loginTahun"></select>
+        </div></label>
+
+      <label class="lf" style="margin-top:12px"><span>Semester</span>
+        <div class="in-grp">
+          <div class="in-ico"><i data-lucide="calendar"></i></div>
+          <select id="loginSem">
+            <option value="1">Ganjil</option>
+            <option value="2">Genap</option>
+          </select>
+        </div></label>
+
+      <details style="margin-top:12px"><summary class="dim" style="cursor:pointer;font-size:12px">Pengaturan Server (URL Web App)</summary>
+        <label class="lf" style="margin-top:8px"><span>URL Web App</span>
+          <div class="in-grp"><div class="in-ico"><i data-lucide="server"></i></div>
+          <input id="loginApi" placeholder="https://script.google.com/macros/s/…/exec"></div></label>
+        <p class="login-hint" style="margin-top:6px">Terisi otomatis bila admin sudah menanam URL di berkas. Cukup diisi sekali per perangkat.</p>
+      </details>
+
+      <div id="loginErr" class="login-err"></div>
+
+      <div class="login-row">
+        <button class="btn primary" type="submit" id="loginBtn"><i data-lucide="log-in"></i><span>Login</span></button>
+        <button type="button" class="forgot" id="forgotLink">Lupa Password Admin?</button>
+      </div>
+
+      <p class="login-hint">Akun dan kata sandi hanya dibagikan oleh Admin madrasah. Data tersinkron ke database Google Sheet madrasah.</p>
+      <p class="login-foot">RDM MTs · v2.1 Cloud · Deployed by <b>HijraH45</b><br>Data tersimpan di Google Sheet madrasah + salinan cepat di perangkat.</p>
+    </form>
+  </div>
+  <div class="login-right">
+    <div id="loginArt" class="login-art"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="appbar">
+    <button id="navBtn" aria-label="Buka menu"><i data-lucide="menu"></i></button>
+    <div class="ap-brand"><div class="brand-mark">R</div><span>Rapor Digital MTs</span></div>
+    <button class="ap-act" data-act="refresh-data" aria-label="Sinkron ulang"><i data-lucide="refresh-cw"></i></button>
+    <button class="ap-act" data-act="logout" aria-label="Keluar"><i data-lucide="log-out"></i></button>
+  </div>
+
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">R</div>
+      <div class="brand-txt"><b>Rapor Digital</b><span>MTs · RDM</span></div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <div id="sideUser" class="side-user"></div>
+      <div class="side-meta">
+        <div class="syncline"><span id="syncDot" class="syncdot"></span><span id="syncTxt">—</span></div>
+        <b id="storSize">—</b> cache perangkat<br><span class="ver">RDM MTs · v2.1 Cloud · HijraH45</span>
+      </div>
+      <button class="out-btn" data-act="logout"><i data-lucide="log-out"></i><span>Keluar</span></button>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="page-head" id="pageHead"></div>
+    <section id="view"></section>
+  </main>
+</div>
+
+<div id="veil"></div>
+<div id="toastRoot"></div>
+<div id="printArea"></div>
+
+<script>
+/* RDM MTs v2.1 CLOUD — file utuh final.
+   Berisi seluruh fitur v2.0 (Google Sheet via Apps Script, cache perangkat,
+   sinkron otomatis + retry) plus: rata-rata & peringkat rapor (dapat on/off),
+   Impor Nilai dari Excel/CSV, Impor Siswa (nama saja / tabel lengkap, pilih
+   kelas, anti-dobel, tanggal Indonesia), penomoran ulang siswa otomatis. */
+
+/* ================= UTIL ================= */
+const $=(s,el=document)=>el.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const BULAN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+function fmtDate(iso){ if(!iso) return ''; const p=String(iso).split('-'); return p.length===3? (+p[2])+' '+BULAN[(+p[1])-1]+' '+p[0] : iso; }
+function debounce(fn,ms){ let t; return (...a)=>{clearTimeout(t); t=setTimeout(()=>fn(...a),ms)} }
+const ROMAN=['','I','II','III','IV','V','VI','VII','VIII','IX','X'];
+function nextLevel(nama){ for(const t of (nama||'').trim().split(/\s+/)){ const i=ROMAN.indexOf(t.toUpperCase()); if(i>0) return ROMAN[i+1]; } return null }
+function refreshIcons(){ if(window.lucide&&lucide.createIcons){ try{ lucide.createIcons() }catch(e){} } }
+
+/* ================= KONFIG SERVER ================= */
+const API_BAWAAN='https://script.google.com/macros/s/AKfycbz8mzvDOhTdcdC6U26P5RlJEnC9lYa1cuBqGA1zj8lrEKGC3v0Kgios9N7SnATm-lioWQ/exec';   /* ← tempel URL /exec di sini (sekali saja) */
+const SK_API='rdm_mts_api', SK_SESI='rdm_mts_sesi', SK_CACHE='rdm_mts_cache';
+let SESSION=null, REV=0, SHADOW=null, SHADOW_USERS=null;
+let SYNC='idle', SYNC_T=null, SYNC_RETRY=null, SYNC_QUEUED=false, FLUSH_WARN=false, LAST_ERR='';
+const clone=o=>JSON.parse(JSON.stringify(o));
+const apiURL=()=> (localStorage.getItem(SK_API)||API_BAWAAN||'').trim();
+async function api(action,payload={}){
+  const url=apiURL();
+  if(!url||url.indexOf('PASTE_LINK')===0) throw new Error('URL server belum diatur (lihat kotak "Pengaturan Server" di halaman login)');
+  let res;
+  try{ res=await fetch(url,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:SESSION?SESSION.token:null,...payload})}) }
+  catch(e){ throw new Error('Tidak dapat menghubungi server — periksa koneksi internet') }
+  let j=null; try{ j=await res.json() }catch(e){}
+  if(!j) throw new Error('Respons server tidak valid');
+  if(j.sesiHabis){ sesiHabis(); throw new Error(j.err||'Sesi berakhir') }
+  if(!j.ok) throw new Error(j.err||'Kesalahan server');
+  return j;
+}
+function sesiHabis(pesan){
+  SESSION=null; ME=null; localStorage.removeItem(SK_SESI);
+  document.body.classList.remove('nav-open');
+  $('#app').style.display='none'; $('#loginScreen').classList.remove('hidden');
+  $('#loginP').value=''; isiIdentitasLogin(); refreshIcons();
+  toast(pesan||'Sesi berakhir — silakan login ulang','warn');
+}
+
+/* ================= AUTENTIKASI & PERAN ================= */
+let USERS=null, ME=null;
+const isAdmin=()=>!!ME&&ME.r==='admin';
+const isWali=()=>!!ME&&ME.r==='wali';
+const roleLabel=r=> r==='admin'?'Admin' : r==='wali'?'Wali Kelas' : 'Operator';
+function hash(s){
+  let h1=0xdeadbeef, h2=0x41c6ce57;
+  for(let i=0;i<s.length;i++){ const ch=s.charCodeAt(i);
+    h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);
+}
+/* Di v2, USERS ikut disinkronkan lewat mesin diff (SHADOW_USERS vs USERS),
+   jadi saveUsers() memicu save() — perubahan akun terkirim ke server. */
+function saveUsers(){ if(USERS) save() }
+function updateSidebarUser(){ const el=$('#sideUser'); if(!el||!ME) return;
+  const kl=isWali()? kelasById(ME.kelasId):null;
+  el.innerHTML=`<i data-lucide="user-round"></i><div><b>${esc(ME.n)}</b><span>${roleLabel(ME.r)}${isWali()&&kl? ' · '+esc(kl.nama):''}</span></div>`;
+  refreshIcons();
+}
+function showLoginErr(m){ const el=$('#loginErr'); el.textContent=m; el.classList.add('on');
+  const f=$('#loginForm'); f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake');
+}
+function bootApp(silent){
+  $('#loginScreen').classList.add('hidden'); $('#app').style.display='';
+  ui={ route:'dashboard', nilaiKelas:null, deskKelas:null, deskMapel:null, eksKelas:null, absKelas:null, cetakKelas:null, preview:null, filterKelas:'all', q:'' };
+  const wd=USERS.find(x=>x.u==='wali');
+  if(wd&&!wd.kelasId&&DB.kelas.length){ wd.kelasId=DB.kelas[1]?.id||DB.kelas[0].id; saveUsers(); }
+  render(); refreshIcons(); updateStorageUI(); updateSidebarUser(); updateSyncUI();
+  tawarkanMigrasi();
+  if(!silent) toast('Assalamualaikum, '+ME.n+' — selamat bekerja');
+}
+ $('#loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const b=$('#loginBtn'); const old=b.innerHTML; b.disabled=true; b.innerHTML='<span>Menghubungkan…</span>';
+  try{
+    const url=$('#loginApi')?.value.trim(); if(url) localStorage.setItem(SK_API,url);
+    const res=await api('login',{u:$('#loginU').value.trim(),p:hash($('#loginP').value)});
+    SESSION={token:res.token,u:res.me.u}; localStorage.setItem(SK_SESI,JSON.stringify(SESSION));
+    REV=res.rev; DB=res.db; USERS=res.users; ME=res.me;
+    SHADOW=clone(DB); SHADOW_USERS=clone(USERS); cacheWrite();
+    const th=$('#loginTahun')?.value, sem=$('#loginSem')?.value; let ubah=false;
+    if(th&&th!==DB.settings.tahun){ DB.settings.tahun=th; ubah=true }
+    if(sem&&sem!==DB.settings.semester){ DB.settings.semester=sem; ubah=true }
+    $('#loginErr').classList.remove('on'); $('#loginP').value='';
+    bootApp(false);
+    if(ubah) save();
+  }catch(err){ showLoginErr(err.message||'Gagal masuk') }
+  finally{ b.disabled=false; b.innerHTML=old; refreshIcons(); }
+});
+ $('#pwToggle').addEventListener('click',()=>{
+  const i=$('#loginP'), show=i.type==='password';
+  i.type=show?'text':'password';
+  $('#pwToggle').innerHTML=`<i data-lucide="${show?'eye-off':'eye'}"></i>`; refreshIcons();
+});
+
+/* Ilustrasi bawaan halaman login */
+const ART_BAWAAN=`<svg viewBox="0 0 520 230" aria-hidden="true">
+  <ellipse cx="265" cy="212" rx="225" ry="10" fill="#d9e3c8"/>
+  <circle cx="60" cy="45" r="16" fill="#0d3426"/><circle cx="66" cy="40" r="13" fill="#eef2e4"/>
+  <polygon points="450,25 453,33 461,33 455,38 457,46 450,41 443,46 445,38 439,33 447,33" fill="#d8b25c"/>
+  <polygon points="482,60 484,66 490,66 485,70 487,76 482,72 477,76 479,70 474,66 480,66" fill="#d8b25c"/>
+  <rect x="128" y="88" width="18" height="124" rx="6" fill="#f7f3e4" stroke="#1b6b3a" stroke-width="2"/>
+  <path d="M124 88 C124 70 132 60 137 56 C142 60 150 70 150 88 Z" fill="#165c3c"/>
+  <circle cx="137" cy="50" r="3.5" fill="#d8b25c"/>
+  <rect x="384" y="88" width="18" height="124" rx="6" fill="#f7f3e4" stroke="#1b6b3a" stroke-width="2"/>
+  <path d="M380 88 C380 70 388 60 393 56 C398 60 406 70 406 88 Z" fill="#165c3c"/>
+  <circle cx="393" cy="50" r="3.5" fill="#d8b25c"/>
+  <rect x="160" y="112" width="200" height="100" rx="6" fill="#f7f3e4" stroke="#1b6b3a" stroke-width="2"/>
+  <rect x="150" y="100" width="220" height="14" rx="7" fill="#165c3c"/>
+  <path d="M233 100 C233 74 245 58 260 52 C275 58 287 74 287 100 Z" fill="#d8b25c"/>
+  <line x1="260" y1="52" x2="260" y2="40" stroke="#d8b25c" stroke-width="2.5"/>
+  <circle cx="260" cy="37" r="4" fill="#d8b25c"/>
+  <path d="M243 212 L243 168 A17 17 0 0 1 277 168 L277 212 Z" fill="#165c3c"/>
+  <path d="M182 212 L182 178 A13 13 0 0 1 208 178 L208 212 Z" fill="#cfe0d2" stroke="#1b6b3a" stroke-width="1.5"/>
+  <path d="M312 212 L312 178 A13 13 0 0 1 338 178 L338 212 Z" fill="#cfe0d2" stroke="#1b6b3a" stroke-width="1.5"/>
+  <path d="M40 205 C52 195 66 195 74 201 L74 214 C66 208 52 208 40 218 Z" fill="#fff" stroke="#1b6b3a" stroke-width="2"/>
+  <path d="M108 205 C96 195 82 195 74 201 L74 214 C82 208 96 208 108 218 Z" fill="#fff" stroke="#1b6b3a" stroke-width="2"/>
+</svg>`;
+
+function isiIdentitasLogin(){
+  const c=(!DB&&cacheRead())? cacheRead().db : DB;
+  const st=c? c.settings:null;
+  const h4=$('#loginH4'); if(h4) h4.textContent= st&&st.nama? ('MTs '+st.nama).toUpperCase() : 'MADRASAH TSANAWIYAH';
+  const lg=$('#lmLogo');
+  if(lg){ if(st&&st.logo){ lg.classList.remove('txt'); lg.innerHTML=`<img src="${st.logo}" alt="Logo">`; }
+    else{ lg.classList.add('txt'); lg.textContent='R'; } }
+  const selT=$('#loginTahun'), selS=$('#loginSem');
+  if(selT){
+    const now=new Date();
+    const y0=now.getMonth()>=6? now.getFullYear():now.getFullYear()-1;
+    let html='';
+    for(let i=1;i>=-6;i--){ const t=(y0+i)+'/'+(y0+i+1);
+      const on= st&&st.tahun? st.tahun===t : i===0;
+      html+=`<option value="${t}" ${on?'selected':''}>${t}</option>`; }
+    if(st&&st.tahun&&!html.includes(`value="${st.tahun}"`)) html=`<option value="${st.tahun}" selected>${st.tahun}</option>`+html;
+    selT.innerHTML=html;
+  }
+  if(selS) selS.value= st&&st.semester==='2'?'2':'1';
+  const apiIn=$('#loginApi');
+  if(apiIn&&!apiIn.value) apiIn.value=localStorage.getItem(SK_API)|| (API_BAWAAN.indexOf('PASTE_LINK')===0?'':API_BAWAAN);
+  const art=$('#loginArt');
+  if(art){
+    const src=st&&st.artLogin? st.artLogin:'';
+    if(src){ art.innerHTML=`<img src="${esc(src)}" alt="Ilustrasi madrasah">`;
+      art.querySelector('img')?.addEventListener('error',()=>{ art.innerHTML=ART_BAWAAN; }); }
+    else art.innerHTML=ART_BAWAAN;
+  }
+}
+ $('#forgotLink')?.addEventListener('click',()=>{
+  openModal(`<div class="mform">
+    <h3>Lupa Kata Sandi?</h3>
+    <p class="dim" style="margin:0 0 10px">Operator dan Wali Kelas silakan menghubungi Admin madrasah untuk reset sandi (Admin dapat mengganti sandi siapa pun lewat menu Pengaturan).</p>
+    <p class="dim" style="margin:0 0 14px">Jika sandi <b>Admin</b> hilang, Admin madrasah dapat menjalankan ulang fungsi <b>setupDatabase</b> di Apps Script untuk mengembalikan 3 akun bawaan (admin/admin, operator/operator, wali/wali). <b>Data rapor tidak ikut terhapus.</b></p>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Tutup</button></div></div>`);
+});
+
+/* ================= DATA (cache perangkat) ================= */
+const MIG_KEY='rdm_mts_v1';
+let DB=null;
+const DEFAULT_MAPEL=['Pendidikan Agama dan Budi Pekerti','Pendidikan Pancasila','Bahasa Indonesia','Matematika','Ilmu Pengetahuan Alam','Ilmu Pengetahuan Sosial','Bahasa Inggris','Bahasa Arab','Seni Budaya','Pendidikan Jasmani, Olahraga dan Kesehatan','Informatika'];
+const PRED_LABEL={A:'Sangat Baik',B:'Baik',C:'Cukup',D:'Perlu Bimbingan'};
+
+function blankDB(){ return { v:1,
+  settings:{ nama:'',nsm:'',npsn:'',alamat:'',kota:'',telepon:'',kepala:'',nipKepala:'',logo:'',logo2:'',artLogin:'',
+    tahun:new Date().getFullYear()+'/'+(new Date().getFullYear()+1),semester:'1',tanggalRapor:'',bA:86,bB:71,bC:56 },
+  kelas:[], siswa:[], nilai:{}, deskripsi:{}, ekskulList:[], ekskul:{}, absen:{}, catatan:{},
+  opts:{huruf:true,stempel:true} } }
+
+function save(){ /* v2: tulis cache + antre sinkron ke server */
+  cacheWrite(); updateStorageUI();
+  if(SYNC_RETRY){ clearTimeout(SYNC_RETRY); SYNC_RETRY=null; FLUSH_WARN=false }
+  if(SYNC==='busy'){ SYNC_QUEUED=true; return }
+  clearTimeout(SYNC_T); SYNC_T=setTimeout(flushSync,700); updateSyncUI();
+}
+function updateStorageUI(){ const el=$('#storSize'); if(!el) return; const kb=(localStorage.getItem(SK_CACHE)||'').length/1024; el.textContent= kb>1024? (kb/1024).toFixed(2)+' MB' : kb.toFixed(1)+' KB' }
+function cacheWrite(){ if(!DB) return; try{ localStorage.setItem(SK_CACHE,JSON.stringify({db:DB,users:USERS,rev:REV,shadow:SHADOW,shadowUsers:SHADOW_USERS})) }catch(e){} }
+function cacheRead(){ try{ return JSON.parse(localStorage.getItem(SK_CACHE)||'null') }catch(e){ return null } }
+function load(){ const c=cacheRead();
+  if(c&&c.db&&c.db.v===1){ DB=c.db; USERS=Array.isArray(c.users)?c.users:[]; REV=c.rev||0; SHADOW=c.shadow||clone(DB); SHADOW_USERS=c.shadowUsers||clone(USERS) } }
+function normalizeDB(){
+  if(!DB.opts) DB.opts={huruf:true,stempel:true};
+  if(!DB.settings) DB.settings=blankDB().settings;
+  if(typeof DB.settings.logo!=='string') DB.settings.logo='';
+  if(typeof DB.settings.logo2!=='string') DB.settings.logo2='';
+  if(typeof DB.settings.artLogin!=='string') DB.settings.artLogin='';
+}
+
+/* Unggah gambar: baca, perkecil via canvas, simpan sebagai data-URL (max default 320px) */
+function prosesLogo(file,cb,max=320){
+  if(!file||!/^image\/(png|jpe?g|webp)$/i.test(file.type)){ toast('Format gambar harus PNG, JPG, atau WebP','err'); return }
+  const r=new FileReader();
+  r.onload=()=>{ const img=new Image();
+    img.onload=()=>{ try{
+        let w=img.width, h=img.height;
+        const k=Math.min(1,max/Math.max(w,h)); w=Math.max(1,Math.round(w*k)); h=Math.max(1,Math.round(h*k));
+        const c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        cb(c.toDataURL('image/png'));
+      }catch(err){ toast('Gagal memproses gambar','err') } };
+    img.onerror=()=>toast('Berkas bukan gambar yang valid','err');
+    img.src=r.result; };
+  r.onerror=()=>toast('Gagal membaca berkas','err');
+  r.readAsDataURL(file);
+}
+
+/* Deskripsi otomatis dari predikat nilai */
+function autoDesk(nama,mapel,nilai){
+  const p=predVal(nilai); const T={
+   A:`Ananda ${nama} menunjukkan penguasaan yang sangat baik pada mata pelajaran ${mapel}. Ia mampu memahami konsep, menerapkan materi, dan menyelesaikan tugas secara mandiri dengan hasil yang konsisten.`,
+   B:`Ananda ${nama} menunjukkan penguasaan yang baik pada mata pelajaran ${mapel}. Ia memahami sebagian besar materi dan mampu menerapkannya dengan bimbingan yang ringan.`,
+   C:`Ananda ${nama} menunjukkan penguasaan yang cukup pada mata pelajaran ${mapel}. Ia memahami materi dasar, namun masih memerlukan pendampingan pada beberapa bagian.`,
+   D:`Ananda ${nama} masih memerlukan bimbingan intensif pada mata pelajaran ${mapel}. Ia perlu didampingi secara berkala agar dapat menguasai materi secara bertahap.`};
+  return T[p]||T.C;
+}
+
+/* Data contoh (menu "Muat Data Contoh") */
+function seedData(){
+  const d=blankDB(); DB=d;
+  Object.assign(d.settings,{ nama:'Al-Hikmah', nsm:'121233017000', npsn:'20219876',
+    alamat:'Jl. Raya Pesantren No. 12, Kertasemaya, Kab. Majalengka 45474', kota:'Kertasemaya', telepon:'(0263) 512441',
+    kepala:"Drs. H. Muhammad Syafi'i, M.Pd.", nipKepala:'19700812 199803 1 002',
+    tahun:'2025/2026', semester:'1', tanggalRapor:'20 Desember 2025' });
+  d.ekskulList=['Pramuka','Rohis','Hadroh','Futsal','Palang Merah Remaja','Klub Tahfidz'];
+  const KL=[['VII A','Siti Maryam, S.Pd.','198503122010012004',2012],
+            ['VIII A','Ahmad Zainal, S.Pd.','198705202011011008',2011],
+            ['IX A','Fatimah Zahra, S.Pd.','199003152015022001',2010]];
+  KL.forEach(([n,w,nip])=>d.kelas.push({id:uid(),nama:n,wali:w,nipWali:nip,mapel:DEFAULT_MAPEL.map(x=>({id:uid(),nama:x}))}));
+  const NAMA=[['Muhammad Rizky Ramadhan','L'],['Aisyah Nur Fadhilah','P'],['Ahmad Fauzan Hakim','L'],['Salsabila Putri Ramadhani','P'],['Rifqi Alfarizi','L'],['Nabila Khairunnisa','P'],['Dimas Arya Prakoso','L'],['Zahra Amelia','P'],['Fikri Haikal','L'],['Anisa Rahma Wulandari','P'],['Bagas Dwi Pratama','L'],['Halimah Tussadiah','P'],['Yusuf Maulana','L'],['Rahma Wulandari','P'],['Ihsan Kurniawan','L'],['Melati Puspita Sari','P']];
+  const AYAH=['Hendra Gunawan','Slamet Riyadi','Bambang Sutrisno','Agus Salim','Dedi Kurniawan','Wahyu Hidayat','Aan Setiawan','Ridwan Syahputra'];
+  const IBU=['Siti Aminah','Dewi Sartika','Nur Hasanah','Yuyun Yunengsih','Ratna Puspita','Lilis Suryani','Enung Nurhayati','Imas Masitoh'];
+  const KP=['Cikoneng','Sukamaju','Sidamulya','Bojongjetur'];
+  const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+  const spread=[{ki:1,from:0,n:8},{ki:0,from:8,n:4},{ki:2,from:12,n:4}];
+  let no=1;
+  spread.forEach(({ki,from,n})=>{
+    for(let j=0;j<n;j++){
+      const [nm,jk]=NAMA[from+j], kelas=d.kelas[ki], id=uid(), yr=[2012,2011,2010][ki];
+      d.siswa.push({ id, kelasId:kelas.id, urutan:j+1, nis:'2025'+(100+no), nisn:'00'+(5100000+no*137),
+        nama:nm, jk, tempatLahir:'Majalengka',
+        tglLahir:`${yr}-${String(r(1,12)).padStart(2,'0')}-${String(r(1,28)).padStart(2,'0')}`,
+        agama:'Islam', ayah:AYAH[(no-1)%8], ibu:IBU[(no*3)%8],
+        alamat:`Kp. ${KP[no%4]} RT 0${r(1,3)} RW 0${r(1,4)}, Kertasemaya` });
+      const base=r(62,84);
+      kelas.mapel.forEach((m,mi)=>{
+        const fill= ki===1? true : (ki===0? mi<6 : mi<8);
+        if(fill) d.nilai[`${id}:${m.id}`]=Math.max(55,Math.min(98,base+r(-6,8)));
+      });
+      const eks=[{nama:d.ekskulList[r(0,5)],predikat:Math.random()<.6?'Sangat Baik':'Baik',ket:'Aktif mengikuti kegiatan rutin mingguan'}];
+      if(Math.random()<.5){ const e2=d.ekskulList[r(0,5)]; if(e2!==eks[0].nama) eks.push({nama:e2,predikat:'Baik',ket:'Berpartisipasi dalam kegiatan madrasah'}) }
+      d.ekskul[id]=eks;
+      d.absen[id]={sakit:r(0,3),izin:r(0,2),alpa:r(0,1)};
+      no++;
+    }
+  });
+  d.siswa.slice(0,2).forEach(s=>d.kelas[1].mapel.forEach(m=>{
+    d.deskripsi[`${s.id}:${m.id}`]=autoDesk(s.nama,m.nama,d.nilai[`${s.id}:${m.id}`]);
+  }));
+  d.catatan[d.siswa[0].id]={ catatan:'Ananda menunjukkan semangat belajar yang baik. Tingkatkan kedisiplinan dalam mengumpulkan tugas tepat waktu.',
+    tanggapan:'Terima kasih atas bimbingan wali kelas dan para guru. Kami akan terus mendampingi putra kami belajar di rumah.' };
+  return d;
+}
+
+/* ================= MESIN SINKRONISASI ================= */
+function baselineDB(){ return {v:1,settings:{},opts:{},ekskulList:[],kelas:[],siswa:[],nilai:{},deskripsi:{},ekskul:{},absen:{},catatan:{}} }
+function computeChanges(){
+  if(!SHADOW||!DB) return null;
+  const ch={}, s0=SHADOW, s1=DB;
+  if(JSON.stringify([s0.settings,s0.opts,s0.ekskulList])!==JSON.stringify([s1.settings,s1.opts,s1.ekskulList]))
+    ch.settings={settings:s1.settings,opts:s1.opts,ekskulList:s1.ekskulList};
+  const dm=(a,b)=>{ a=a||{}; b=b||{}; const u={},d=[];
+    Object.keys(b).forEach(k=>{ if(!(k in a)||JSON.stringify(a[k])!==JSON.stringify(b[k])) u[k]=b[k] });
+    Object.keys(a).forEach(k=>{ if(!(k in b)) d.push(k) });
+    return (Object.keys(u).length||d.length)?{u,d}:null };
+  const am=(a,b)=>{ const A={},B={}; (a||[]).forEach(x=>A[x.id]=x); (b||[]).forEach(x=>B[x.id]=x); return dm(A,B) };
+  [['kelas',am(s0.kelas,s1.kelas)],['siswa',am(s0.siswa,s1.siswa)],['nilai',dm(s0.nilai,s1.nilai)],
+   ['deskripsi',dm(s0.deskripsi,s1.deskripsi)],['ekskul',dm(s0.ekskul,s1.ekskul)],
+   ['absen',dm(s0.absen,s1.absen)],['catatan',dm(s0.catatan,s1.catatan)]]
+   .forEach(([k,v])=>{ if(v) ch[k]=v });
+  if(SHADOW_USERS&&USERS){ const A={},B={}; SHADOW_USERS.forEach(x=>A[x.u]=x); USERS.forEach(x=>B[x.u]=x);
+    const ru=dm(A,B); if(ru) ch.users=ru; }
+  return Object.keys(ch).length?ch:null;
+}
+async function flushSync(){
+  const ch=computeChanges();
+  if(!ch){ SYNC='idle'; updateSyncUI(); return }
+  SYNC='busy'; updateSyncUI();
+  try{
+    const res=await api('save',{rev:REV,changes:ch});
+    REV=res.rev; SHADOW=clone(DB); SHADOW_USERS=clone(USERS); cacheWrite(); updateStorageUI();
+    SYNC='idle'; FLUSH_WARN=false; LAST_ERR=''; updateSyncUI();
+  }catch(err){
+    SYNC='off'; LAST_ERR=err.message; updateSyncUI();
+    if(!FLUSH_WARN){ toast('Perubahan belum terkirim: '+err.message+' — dicoba ulang otomatis.','warn'); FLUSH_WARN=true }
+    if(!SYNC_RETRY) SYNC_RETRY=setTimeout(()=>{ SYNC_RETRY=null; flushSync() },20000);
+  }
+  if(SYNC_QUEUED){ SYNC_QUEUED=false; clearTimeout(SYNC_T); SYNC_T=setTimeout(flushSync,400) }
+}
+async function pullData(manual){
+  if(computeChanges()){ await flushSync(); if(computeChanges()){ if(manual) toast('Masih ada perubahan belum terkirim — muat ulang ditunda.','warn'); return false } }
+  try{
+    SYNC='busy'; updateSyncUI();
+    const res=await api('getDB');
+    REV=res.rev; DB=res.db; USERS=res.users;
+    if(res.me) ME=USERS.find(x=>x.u===res.me.u)||res.me;
+    SHADOW=clone(DB); SHADOW_USERS=clone(USERS); cacheWrite(); updateStorageUI();
+    SYNC='idle'; FLUSH_WARN=false; LAST_ERR=''; updateSyncUI();
+    render(); updateSidebarUser(); refreshIcons();
+    if(manual) toast('Data dimuat ulang dari server');
+    return true;
+  }catch(err){
+    SYNC='off'; LAST_ERR=err.message; updateSyncUI();
+    if(manual) toast(err.message,'err');
+    return false;
+  }
+}
+function updateSyncUI(){
+  const dot=$('#syncDot'), txt=$('#syncTxt');
+  const label= SYNC==='busy'?'Menyimpan…': SYNC==='off'?'Menunggu koneksi':'Tersinkron';
+  const cls= SYNC==='busy'?'busy': SYNC==='off'?'off':'';
+  if(dot) dot.className='syncdot '+cls;
+  if(txt) txt.textContent=label;
+}
+function tawarkanMigrasi(){
+  if(localStorage.getItem('rdm_mts_mig2')||!isAdmin()) return;
+  let lama=null; try{ lama=JSON.parse(localStorage.getItem(MIG_KEY)||'null') }catch(e){}
+  if(!lama||lama.v!==1||!Array.isArray(lama.kelas)||!lama.kelas.length) return;
+  localStorage.setItem('rdm_mts_mig2','1');
+  openModal(`<div class="mform"><h3>Pindahkan data versi lama?</h3>
+    <p class="dim" style="margin:0 0 8px">Ditemukan data rapor v1.9 di perangkat ini (${lama.kelas.length} kelas, ${(lama.siswa||[]).length} siswa).</p>
+    <p class="dim" style="margin:0 0 14px">Impor akan <b>mengganti seluruh</b> data di server dengan data tersebut. Lanjutkan?</p>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Nanti Saja</button>
+    <button type="button" class="btn primary" id="migGo"><i data-lucide="upload"></i><span>Impor ke Server</span></button></div></div>`,
+    m=>{ $('#migGo',m).onclick=()=>{ DB=lama; normalizeDB(); SHADOW=baselineDB(); SHADOW_USERS=clone(USERS); m.remove(); save(); render(); toast('Impor dimulai — data sedang disinkronkan ke server') } });
+}
+
+/* ================= DOMAIN ================= */
+const kelasById=id=>DB.kelas.find(k=>k.id===id);
+const siswaById=id=>DB.siswa.find(s=>s.id===id);
+const mapelById=(kid,mid)=>kelasById(kid)?.mapel.find(m=>m.id===mid);
+const nilKey=(sid,mid)=>sid+':'+mid;
+const getNil=(sid,mid)=>{ const v=DB.nilai[nilKey(sid,mid)]; return v==null?null:v };
+function siswaOf(kid){ return DB.siswa.filter(s=>s.kelasId===kid).sort((a,b)=>a.urutan-b.urutan||a.nama.localeCompare(b.nama)) }
+function predVal(n){ if(n==null||isNaN(n)) return null; const s=DB.settings; return n>=s.bA?'A':n>=s.bB?'B':n>=s.bC?'C':'D' }
+function kelasStat(kid){ const sw=siswaOf(kid), mp=kelasById(kid)?.mapel||[]; const total=sw.length*mp.length; let filled=0,sum=0;
+  sw.forEach(s=>mp.forEach(m=>{ const v=getNil(s.id,m.id); if(v!=null){filled++;sum+=v} }));
+  return { total,filled,pct:total?Math.round(filled/total*100):0, avg:filled?sum/filled:null } }
+function nilaiKurang(s){ return (kelasById(s.kelasId)?.mapel||[]).reduce((n,m)=>n+(getNil(s.id,m.id)==null?1:0),0) }
+function siswaLengkap(s){ const mp=kelasById(s.kelasId)?.mapel||[]; return mp.length>0 && mp.every(m=>getNil(s.id,m.id)!=null) }
+/* Penomoran ulang siswa satu kelas menjadi 1..n sesuai urutan saat ini */
+function renumberKelas(kid){
+  if(!kid||!kelasById(kid)) return;
+  siswaOf(kid).forEach((s,i)=>{ s.urutan=i+1 });
+}
+function cleanSiswa(sid){ [DB.nilai,DB.deskripsi].forEach(o=>Object.keys(o).forEach(k=>{ if(k.startsWith(sid+':')) delete o[k] })); delete DB.ekskul[sid]; delete DB.absen[sid]; delete DB.catatan[sid] }
+function cleanMapel(mid){ [DB.nilai,DB.deskripsi].forEach(o=>Object.keys(o).forEach(k=>{ if(k.endsWith(':'+mid)) delete o[k] })) }
+function eksArr(sid){ if(!DB.ekskul[sid]) DB.ekskul[sid]=[0,1,2].map(()=>({nama:'',predikat:'',ket:''}));
+  const a=DB.ekskul[sid]; while(a.length<3) a.push({nama:'',predikat:'',ket:''}); return a }
+function abbr(n){ const skip=new Set(['dan','di','dari','ke']);
+  const ws=String(n).trim().split(/\s+/).map(w=>w.replace(/[,.]/g,'')).filter(w=>w&&!skip.has(w.toLowerCase()));
+  if(ws.length===1) return ws[0].slice(0,4);
+  return ws.map(w=>w[0].toUpperCase()).join('') }
+function legendPredikat(){ const s=DB.settings;
+  return `<span class="lg pA">A · ${s.bA}–100</span><span class="lg pB">B · ${s.bB}–${s.bA-1}</span><span class="lg pC">C · ${s.bC}–${s.bB-1}</span><span class="lg pD">D · 0–${s.bC-1}</span>` }
+/* Rata-rata & peringkat kelas untuk rapor */
+function rerataSiswa(s){
+  const mp=kelasById(s.kelasId)?.mapel||[]; let sum=0,c=0;
+  mp.forEach(m=>{ const v=getNil(s.id,m.id); if(v!=null){sum+=v;c++} });
+  return c? sum/c : null;
+}
+function fmtAngka(n){ return n==null? '—' : n.toFixed(1).replace('.',',') }
+function peringkatSiswa(s){
+  if(!siswaLengkap(s)) return null;
+  const sw=siswaOf(s.kelasId).filter(x=>siswaLengkap(x));
+  if(!sw.length) return null;
+  const myR=rerataSiswa(s); let rank=1;
+  sw.forEach(x=>{ if(rerataSiswa(x)>myR) rank++ });
+  return {rank, dari:sw.length};
+}
+
+/* ================= TOAST & MODAL ================= */
+function toast(msg,type='ok'){
+  const el=document.createElement('div'); el.className='toast '+(type==='ok'?'':type);
+  el.innerHTML=`<i data-lucide="${type==='err'?'alert-triangle':type==='warn'?'info':'check'}"></i><span>${esc(msg)}</span>`;
+  $('#toastRoot').appendChild(el); refreshIcons();
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),320) },2800);
+}
+function openModal(html,after){
+  const ov=document.createElement('div'); ov.className='overlay';
+  ov.innerHTML=`<div class="modal">${html}</div>`;
+  ov.addEventListener('mousedown',e=>{ if(e.target===ov) ov.remove() });
+  document.body.appendChild(ov); after&&after(ov); refreshIcons(); return ov;
+}
+function confirmDialog({title,message,ok='Hapus'}){ return new Promise(res=>{
+  openModal(`<div class="mform"><h3>${esc(title)}</h3><p class="dim">${message}</p>
+    <div class="mfoot"><button class="btn ghost" id="cfNo">Batal</button>
+    <button class="btn danger" id="cfYes"><i data-lucide="trash-2"></i><span>${esc(ok)}</span></button></div></div>`,
+    m=>{ $('#cfNo',m).onclick=()=>{m.remove();res(false)}; $('#cfYes',m).onclick=()=>{m.remove();res(true)} }) }) }
+
+/* ================= MODAL PENGGUNA ================= */
+function modalAddUser(){
+  openModal(`<form id="fUser" class="mform">
+    <h3>Tambah Pengguna</h3>
+    <div class="mgrid">
+      ${fld('nama','Nama Lengkap *','mis. Ustadz Ahmad')}
+      ${fld('un','Nama Pengguna *','mis. guru01')}
+      <label class="fld"><span>Peran</span><select name="role" id="fRole">
+        <option value="operator">Operator</option>
+        <option value="wali">Wali Kelas</option>
+        <option value="admin">Admin</option></select></label>
+      <label class="fld" id="fKelasWrap"><span>Kelas (untuk Wali Kelas)</span><select name="kelasId" id="fKelas">
+        <option value="">— pilih kelas —</option>
+        ${DB.kelas.map(k=>`<option value="${k.id}">${esc(k.nama)} — ${esc(k.wali||'')}</option>`).join('')}</select></label>
+      ${fld('pw','Kata Sandi * (min. 4)','••••••','' ,'password','wide2')}
+    </div>
+    <p class="dim sm2" style="margin:12px 0 0">Wali Kelas hanya dapat mengakses data kelas yang dipilih (nilai, deskripsi, ekskul, absensi, catatan, siswa, dan cetak rapor kelasnya).</p>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="user-plus"></i><span>Tambah</span></button></div>
+  </form>`,m=>{ const roleSel=$('#fRole',m), wrap=$('#fKelasWrap',m);
+    const sync=()=>{ wrap.style.display= roleSel.value==='wali'? '':'none' }; sync();
+    roleSel.addEventListener('change',sync);
+    $('#fUser',m).addEventListener('submit',e=>{ e.preventDefault();
+      const f=new FormData(e.target), o={}; f.forEach((v,k)=>o[k]=String(v).trim());
+      const un=o.un.toLowerCase(), role=o.role||'operator';
+      if(!o.nama||!un) return toast('Lengkapi nama dan nama pengguna','err');
+      if(o.pw.length<4) return toast('Kata sandi minimal 4 karakter','err');
+      if(USERS.some(x=>x.u.toLowerCase()===un)) return toast('Nama pengguna sudah dipakai','err');
+      if(role==='wali'&&!kelasById(o.kelasId)) return toast('Pilih kelas untuk Wali Kelas','err');
+      USERS.push({u:un,n:o.nama,p:hash(o.pw),r:role,kelasId:role==='wali'?o.kelasId:null});
+      saveUsers(); m.remove(); vPengaturan(); refreshIcons(); toast('Pengguna "'+o.nama+'" ditambahkan — tersinkron ke server');
+    }) });
+}
+function modalEditUser(u){
+  const usr=USERS.find(x=>x.u===u); if(!usr) return;
+  openModal(`<form id="fEdit" class="mform">
+    <h3>Sunting Pengguna — ${esc(usr.n)}</h3>
+    <div class="mgrid">
+      ${fld('nama','Nama Lengkap *','',usr.n)}
+      <label class="fld"><span>Peran</span><select name="role" id="fRole2">
+        <option value="operator" ${usr.r==='operator'?'selected':''}>Operator</option>
+        <option value="wali" ${usr.r==='wali'?'selected':''}>Wali Kelas</option>
+        <option value="admin" ${usr.r==='admin'?'selected':''}>Admin</option></select></label>
+      <label class="fld" id="fKelasWrap2"><span>Kelas (untuk Wali Kelas)</span><select name="kelasId" id="fKelas2">
+        <option value="">— pilih kelas —</option>
+        ${DB.kelas.map(k=>`<option value="${k.id}" ${usr.kelasId===k.id?'selected':''}>${esc(k.nama)} — ${esc(k.wali||'')}</option>`).join('')}</select></label>
+    </div>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="check"></i><span>Simpan</span></button></div>
+  </form>`,m=>{ const roleSel=$('#fRole2',m), klSel=$('#fKelas2',m), wrap=$('#fKelasWrap2',m);
+    const sync=()=>{ wrap.style.display= roleSel.value==='wali'? '':'none'; if(roleSel.value!=='wali') klSel.value=''; }; sync();
+    roleSel.addEventListener('change',sync);
+    $('#fEdit',m).addEventListener('submit',e=>{ e.preventDefault();
+      const f=new FormData(e.target), o={}; f.forEach((v,k)=>o[k]=String(v).trim());
+      const role=o.role||'operator';
+      if(!o.nama) return toast('Nama wajib diisi','err');
+      if(role==='wali'&&!kelasById(o.kelasId)) return toast('Pilih kelas untuk Wali Kelas','err');
+      usr.n=o.nama; usr.r=role; usr.kelasId=role==='wali'?o.kelasId:null;
+      saveUsers(); m.remove(); vPengaturan(); refreshIcons(); updateSidebarUser(); toast('Data pengguna diperbarui');
+    }) });
+}
+function modalPass(u,self){
+  const usr=USERS.find(x=>x.u===u); if(!usr) return;
+  openModal(`<form id="fPass" class="mform">
+    <h3>Ganti Kata Sandi${self?' Saya':' — '+esc(usr.n)}</h3>
+    ${self?`<label class="fld"><span>Sandi Lama</span><input name="old" type="password" required autocomplete="current-password"></label>`:''}
+    <label class="fld" style="${self?'margin-top:12px':''}"><span>Sandi Baru (min. 4 karakter)</span><input name="nw" type="password" required minlength="4" autocomplete="new-password"></label>
+    <label class="fld" style="margin-top:12px"><span>Ulangi Sandi Baru</span><input name="nw2" type="password" required minlength="4" autocomplete="new-password"></label>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="key-round"></i><span>Simpan Sandi</span></button></div>
+  </form>`,m=>{ $('#fPass',m).addEventListener('submit',e=>{ e.preventDefault();
+    const f=new FormData(e.target);
+    const nw=String(f.get('nw')||''), nw2=String(f.get('nw2')||'');
+    if(nw!==nw2) return toast('Sandi baru tidak sama','err');
+    if(self&&usr.p!==hash(String(f.get('old')||''))) return toast('Sandi lama salah','err');
+    usr.p=hash(nw); saveUsers(); m.remove(); toast('Kata sandi diperbarui — tersinkron ke server');
+  }) });
+}
+
+/* ================= BANGUNAN RAPOR ================= */
+function emblemSVG(){
+  return `<svg class="koplogo" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="47" fill="#fff" stroke="#1b6b3a" stroke-width="3.5"/>
+    <circle cx="50" cy="50" r="41" fill="none" stroke="#1b6b3a" stroke-width="1.2"/>
+    <circle cx="46" cy="47" r="14" fill="#1b6b3a"/>
+    <circle cx="52" cy="43" r="11.5" fill="#fff"/>
+    <polygon points="63,33.5 64.9,38.4 70.1,38.7 66,42 67.4,47.1 63,44.2 58.6,47.1 60,42 55.9,38.7 61.1,38.4" fill="#c9a24b"/>
+    <path d="M27 68c9-5.2 16.5-5.2 23-1.2 6.5-4 14-4 23 1.2v10c-9-5.2-16.5-5.2-23-1.2-6.5-4-14-4-23 1.2z" fill="#1b6b3a"/>
+  </svg>`;
+}
+function stempelSVG(){
+  const st=DB.settings, nm=String(st.nama||'MADRASAH').toUpperCase(), u=uid();
+  return `<svg class="stamp" viewBox="0 0 130 130" aria-hidden="true">
+    <defs>
+      <path id="stA${u}" d="M12,65 A53,53 0 0 1 118,65" fill="none"/>
+      <path id="stB${u}" d="M15,65 A50,50 0 0 0 115,65" fill="none"/>
+    </defs>
+    <circle cx="65" cy="65" r="61" fill="none" stroke="#b6322a" stroke-width="3"/>
+    <circle cx="65" cy="65" r="47" fill="none" stroke="#b6322a" stroke-width="1.4"/>
+    <text fill="#b6322a" font-size="9" font-weight="700" letter-spacing="1.4" font-family="Plus Jakarta Sans,sans-serif"><textPath href="#stA${u}" startOffset="50%" text-anchor="middle">MADRASAH TSANAWIYAH ${esc(nm)}</textPath></text>
+    <text fill="#b6322a" font-size="8" letter-spacing="2" font-family="Plus Jakarta Sans,sans-serif"><textPath href="#stB${u}" startOffset="50%" text-anchor="middle">${esc(String(st.kota||'').toUpperCase())}</textPath></text>
+    <text x="65" y="62" text-anchor="middle" fill="#b6322a" font-size="11" font-weight="800" letter-spacing="1" font-family="Plus Jakarta Sans,sans-serif">${esc(nm)}</text>
+    <text x="65" y="76" text-anchor="middle" fill="#b6322a" font-size="7" letter-spacing="1" font-family="Plus Jakarta Sans,sans-serif">NSM ${esc(st.nsm||'—')}</text>
+  </svg>`;
+}
+function raporHTML(s){
+  const st=DB.settings, k=kelasById(s.kelasId)||{nama:'',mapel:[],wali:'',nipWali:''}, mp=k.mapel||[];
+  const huruf=DB.opts.huruf;
+  const rr=rerataSiswa(s), pk=peringkatSiswa(s);
+  const sumRow=(DB.settings.tampilRerata!==false||DB.settings.tampilRanking!==false)
+    ? `<table class="abl" style="margin-top:1.2mm"><tr>`
+      +(DB.settings.tampilRerata!==false? `<td>Rata-rata Nilai</td><td>:</td><td><b>${fmtAngka(rr)}</b></td>`:'')
+      +(DB.settings.tampilRanking!==false? `<td>Peringkat Kelas</td><td>:</td><td><b>${pk?pk.rank:'—'}</b>${pk? ' dari '+pk.dari+' siswa':''}</td>`:'')
+      +`</tr></table>`
+    : '';
+  const rows=mp.map((m,i)=>{ const v=getNil(s.id,m.id), p=predVal(v);
+  const vh=v==null?'–':(v+(huruf&&p?` <b>(${p})</b>`:''));
+  const desk=DB.deskripsi[nilKey(s.id,m.id)];
+  return `<tr><td class="rno">${i+1}</td><td class="rmp">${esc(m.nama)}</td><td class="rval">${vh}</td><td class="rcap">${desk?esc(desk):'—'}</td></tr>` }).join('');
+  const eks=(DB.ekskul[s.id]||[]).filter(e=>e&&e.nama);
+  const eksRows=eks.length? eks.map((e,i)=>`<tr><td class="rno">${i+1}</td><td>${esc(e.nama)}</td><td class="rvc">${esc(e.predikat||'')}</td><td>${esc(e.ket||'')}</td></tr>`).join('')
+    : `<tr><td class="rno">1</td><td colspan="3">—</td></tr>`;
+  const ab=DB.absen[s.id]||{};
+  const cat=DB.catatan[s.id]||{};
+  const naikTxt= st.semester==='2'
+    ? (cat.naik==='naik'? `Naik ke Kelas ${esc(cat.naikKe||'—')}` : cat.naik==='tinggal'? `Tinggal di Kelas ${esc(k.nama)}` : '—')
+    : '—';
+  const ttl=s.tempatLahir? esc(s.tempatLahir)+(s.tglLahir?', '+fmtDate(s.tglLahir):'') : '—';
+  const semTxt= st.semester==='2'?'Genap':'Ganjil';
+  const logoL= st.logo2? `<img class="koplogo" src="${st.logo2}" alt="Lambang Kemenag">` : emblemSVG();
+  const logoR= st.logo? `<img class="koplogo" src="${st.logo}" alt="Logo madrasah">` : emblemSVG();
+  const idnRow=(k1,v1,k2,v2)=>`<tr><td class="ik">${k1}</td><td class="iv">${v1}</td><td class="ik">${k2}</td><td class="iv">${v2}</td></tr>`;
+  const idn= idnRow('Nama Peserta Didik','<b>'+esc(s.nama)+'</b>','Jenis Kelamin', s.jk==='P'?'Perempuan':'Laki-laki')
+    + idnRow('NIS / NISN', esc(s.nis||'—')+' / '+esc(s.nisn||'—'),'Kelas / Semester', esc(k.nama||'—')+' / '+semTxt)
+    + idnRow('Tempat, Tanggal Lahir', ttl,'Tahun Ajaran', esc(st.tahun||'—'));	
+  return `<div class="sheet">
+    <div class="kop">
+      ${logoL}
+      <div class="kop-c">
+        <div class="kop1">MADRASAH TSANAWIYAH ${esc(String(st.nama||'—').toUpperCase())}</div>
+        <div class="kop2">${esc(st.alamat||'')}</div>
+        <div class="kop3">NSM ${esc(st.nsm||'—')} · NPSN ${esc(st.npsn||'—')}${st.telepon? ' · Telp. '+esc(st.telepon):''}</div>
+      </div>
+      ${logoR}
+    </div>
+    <div class="koprule"></div><div class="koprule t2"></div>
+    <div class="rtitle">RAPOR SUMATIF TENGAH SEMESTER (STS)</div>
+    <table class="idn2">${idn}</table>
+    <div class="sec">A. Nilai dan Capaian Kompetensi</div>
+    <table class="rtbl"><thead><tr><th class="rno">No</th><th>Mata Pelajaran</th><th class="rvc">Nilai Akhir</th><th>Capaian Kompetensi</th></tr></thead><tbody>${rows}</tbody></table>
+    ${sumRow}
+    <div class="sec">B. Ekstrakurikuler</div>
+    <table class="rtbl"><thead><tr><th class="rno">No</th><th>Kegiatan Ekstrakurikuler</th><th class="rvc">Predikat</th><th>Keterangan</th></tr></thead><tbody>${eksRows}</tbody></table>
+    <div class="sec">C. Ketidakhadiran</div>
+    <table class="abl"><tr>
+      <td>Sakit</td><td>:</td><td>${ab.sakit||0} hari</td>
+      <td>Izin</td><td>:</td><td>${ab.izin||0} hari</td>
+      <td>Tanpa Keterangan</td><td>:</td><td>${ab.alpa||0} hari</td></tr></table>
+    <div class="sec">D. Catatan Wali Kelas</div>
+    <div class="box">${esc(cat.catatan||'—')}</div>
+    <div class="sec">E. Tanggapan Orang Tua/Wali</div>
+    <div class="box">${esc(cat.tanggapan||'—')}</div>
+    <div class="sec">F. Keputusan</div>
+    <div class="box kiri">${naikTxt}</div>
+    <div class="ttd">
+      <div class="ttd-kanan">${esc(st.kota||'…………………')}, ${esc(st.tanggalRapor||'…………………')}</div>
+      <div class="ttd-cols">
+        <div class="ttd-c">Orang Tua/Wali,<div class="gap"></div><div class="nm">(………………………)</div></div>
+        <div class="ttd-c">Wali Kelas,<div class="gap"></div><div class="nm"><span class="nm-line">${esc(k.wali||'………………………')}</span><span class="nip">NIP. ${esc(k.nipWali||'…………………')}</span></div></div>
+      </div>
+      <div class="ttd-mid">Mengetahui,<br>Kepala Madrasah,
+        ${DB.opts.stempel? stempelSVG():''}
+        <div class="gap"></div>
+        <div class="nm"><span class="nm-line">${esc(st.kepala||'………………………')}</span><span class="nip">NIP. ${esc(st.nipKepala||'…………………')}</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ================= NAVIGASI & UI ================= */
+const NAV=[ {sec:'Utama'},{r:'dashboard',t:'Dashboard',i:'layout-dashboard'},
+ {sec:'Identitas'},{r:'identitas',t:'Madrasah & Semester',i:'school'},
+ {sec:'Data Induk'},{r:'kelas',t:'Kelas & Mapel',i:'layers'},{r:'siswa',t:'Siswa',i:'users'},{r:'ekskul',t:'Ekstrakurikuler',i:'medal'},
+ {sec:'Penilaian'},{r:'nilai',t:'Input Nilai',i:'clipboard-list'},{r:'deskripsi',t:'Deskripsi Capaian',i:'file-text'},
+ {sec:'Rapor'},{r:'absensi',t:'Absensi & Catatan',i:'notebook-pen'},{r:'cetak',t:'Cetak Rapor',i:'printer'},
+ {sec:'Sistem'},{r:'pengaturan',t:'Pengaturan & Backup',i:'database'} ];
+
+let ui={ route:'dashboard', nilaiKelas:null, deskKelas:null, deskMapel:null, eksKelas:null, absKelas:null, cetakKelas:null, preview:null, filterKelas:'all', q:'' };
+
+const kelasAkses=()=> isWali()? DB.kelas.filter(k=>k.id===ME.kelasId) : DB.kelas;
+function curKelas(cur){
+  if(isWali()) return kelasById(ME.kelasId)? ME.kelasId : null;
+  return kelasById(cur)? cur : (DB.kelas[0]?.id||null);
+}
+function renderNav(){
+  const items= isWali()? NAV.filter(it=>!it.sec&&it.r!=='identitas') : NAV;
+  $('#nav').innerHTML=items.map(it=> it.sec? `<div class="nav-sec">${it.sec}</div>`
+   : `<button class="nav-it ${ui.route===it.r?'on':''}" data-nav="${it.r}"><i data-lucide="${it.i}"></i><span>${it.t}</span></button>`).join('');
+}
+function head(title,desc,actions=''){
+  $('#pageHead').innerHTML=`<div class="ph-t"><h1>${title}</h1><p>${desc}</p></div><div class="ph-a">${actions}</div>`;
+}
+function btn(label,act,cls='primary',icon=''){
+  return `<button class="btn ${cls}" data-act="${act}">${icon?`<i data-lucide="${icon}"></i>`:''}<span>${label}</span></button>`;
+}
+function fld(name,label,ph='',val='',type='text',cls=''){
+  return `<label class="fld ${cls}"><span>${label}</span><input type="${type}" name="${name}" value="${esc(val)}" placeholder="${esc(ph)}"></label>`;
+}
+function kelasOptions(sel){ return kelasAkses().map(k=>`<option value="${k.id}" ${k.id===sel?'selected':''}>${esc(k.nama)}</option>`).join('') }
+function waliChip(){ const kl=isWali()? kelasById(ME.kelasId):null;
+  return isWali()? `<span class="chip ok">Wali Kelas — ${esc(kl?.nama||'tanpa kelas')}</span>` : ''; }
+function emptyKelas(msg='Belum ada kelas terdaftar.'){
+  return `<div class="card pad empty">${esc(msg)}${isWali()?'':'<div class="btnrow" style="justify-content:center;margin-top:12px">'+btn('Tambah Kelas','add-kelas')+'</div>'}</div>`;
+}
+function render(){
+  renderNav();
+  ({dashboard:vDashboard,identitas:vIdentitas,kelas:vKelas,siswa:vSiswa,nilai:vNilai,deskripsi:vDeskripsi,
+    ekskul:vEkskul,absensi:vAbsensi,cetak:vCetak,pengaturan:vPengaturan}[ui.route]||vDashboard)();
+  refreshIcons(); updateStorageUI();
+  if(ui.route==='cetak'){ fitSheets(); setTimeout(fitSheets,350) }
+}
+function fitSheets(){
+  document.querySelectorAll('.sheet-wrap').forEach(w=>{
+    const sheet=w.querySelector('.sheet');
+    if(!sheet){ w.style.height='auto'; return }
+    const avail=w.clientWidth; if(!avail) return;
+    const k=Math.min(1, avail/sheet.offsetWidth);
+    sheet.style.transform= k<1? 'scale('+k+')':'';
+    w.style.height=(sheet.offsetHeight*k)+'px';
+  });
+}
+window.addEventListener('resize',debounce(fitSheets,150));
+
+/* ================= VIEW: DASHBOARD ================= */
+function vDashboard(){
+  const st=DB.settings;
+  head('Dashboard','Ringkasan penilaian dan kesiapan rapor semester ini.', btn('Cetak Rapor','goto-cetak','primary','printer'));
+  if(isWali()&&!kelasById(ME.kelasId)){
+    $('#view').innerHTML=`<div class="card pad empty">Akun Wali Kelas Anda belum terikat ke kelas mana pun.<br>Silakan hubungi Admin untuk menautkan kelas Anda di menu Pengaturan.</div>`;
+    return;
+  }
+  const rows=kelasAkses().map(k=>{ const s=kelasStat(k.id), sw=siswaOf(k.id);
+    return `<div class="prog-row">
+      <div class="prog-k">
+        <button class="prog-kelas" data-nav="nilai" data-arg="${k.id}">${esc(k.nama)}</button>
+        <span class="prog-sub">${sw.length} siswa · ${k.mapel.length} mapel</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${s.pct}%"></div></div>
+      <div class="prog-val"><b>${s.pct}%</b><span>${s.filled}/${s.total} nilai${s.avg!=null? ' · rata '+s.avg.toFixed(1):''}</span></div>
+    </div>` }).join('') || emptyKelas();
+  const ready=DB.siswa.filter(s=>siswaLengkap(s)&&(!isWali()||s.kelasId===ME.kelasId));
+  const readyList=ready.slice(0,6).map(s=>`<button class="ready-row" data-act="preview-siswa" data-id="${s.id}">
+      <span class="rr-nama">${esc(s.nama)}</span><span class="rr-kelas">${esc(kelasById(s.kelasId)?.nama||'')}</span>
+      <i data-lucide="printer"></i></button>`).join('') || `<p class="dim" style="margin:4px 0">Belum ada siswa dengan nilai lengkap — lengkapi input nilai terlebih dahulu.</p>`;
+  const kb=(JSON.stringify(DB).length/1024).toFixed(1);
+  $('#view').innerHTML=`<div class="dash">
+   <div class="dash-main">
+    <div class="card pad">
+      <div class="c-head"><h2>Progres Pengisian Nilai</h2><span class="chip">${esc(st.tahun||'—')} · Semester ${st.semester==='2'?'Genap':'Ganjil'}</span></div>
+      ${rows}
+    </div>
+    <div class="card pad">
+      <div class="c-head"><h2>Siap Dicetak</h2><span class="chip">${ready.length} siswa</span></div>
+      ${readyList}
+      <div class="c-foot"><button class="btn ghost sm" data-nav="cetak">Buka halaman cetak <i data-lucide="arrow-right"></i></button></div>
+    </div>
+   </div>
+   <div class="dash-side">
+    <div class="card pad idn-mini">
+      <div class="mini-label">Identitas Madrasah</div>
+      ${st.logo? `<img class="mini-logo" src="${st.logo}" alt="Logo madrasah">` : ''}
+      <div class="mini-nama">MTs ${esc(st.nama)||'—'}</div>
+      <dl>
+        <dt>NSM</dt><dd>${esc(st.nsm)||'—'}</dd>
+        <dt>Kepala</dt><dd>${esc(st.kepala)||'—'}</dd>
+        <dt>Pembagian</dt><dd>${esc(st.tanggalRapor)||'—'}</dd>
+      </dl>
+      ${isWali()? waliChip() : '<button class="btn ghost sm" data-nav="identitas">Ubah identitas</button>'}
+    </div>
+    <div class="card pad">
+      <div class="mini-label">Aksi Cepat</div>
+      <button class="qbtn" data-nav="nilai"><i data-lucide="clipboard-list"></i>Input nilai</button>
+      <button class="qbtn" data-nav="deskripsi"><i data-lucide="file-text"></i>Tulis deskripsi capaian</button>
+      <button class="qbtn" data-nav="siswa"><i data-lucide="user-plus"></i>Kelola / tambah siswa</button>
+      ${isWali()? '' : '<button class="qbtn" data-act="backup"><i data-lucide="download"></i>Unduh cadangan data</button>'}
+    </div>
+    <div class="card pad">
+      <div class="mini-label">Penyimpanan & Sinkronisasi</div>
+      <p class="dim" style="margin:0 0 10px;font-size:12.5px">Data tersimpan di Google Sheet madrasah + salinan cepat di perangkat ini (${kb} KB). Perubahan terkirim otomatis saat online.</p>
+      ${isWali()? '<button class="btn ghost sm" data-act="refresh-data">Tarik ulang data</button>' : '<button class="btn ghost sm" data-nav="pengaturan">Pengaturan & backup</button>'}
+    </div>
+   </div>
+  </div>`;
+}
+
+/* ================= VIEW: IDENTITAS ================= */
+function logoCell(label,hint,fileId,actUp,actDel,src){
+  return `<div class="logo-cell">
+    <span>${label}</span>
+    <div class="logo-ctl">
+      <div class="logo-prev">${src?`<img src="${src}" alt="">`:'<i data-lucide="image"></i>'}</div>
+      <div class="logo-btns">
+        <div class="btnrow">
+          <button type="button" class="btn ghost sm" data-act="${actUp}"><i data-lucide="upload"></i><span>Unggah</span></button>
+          ${src? `<button type="button" class="btn danger-outline sm" data-act="${actDel}"><i data-lucide="trash-2"></i><span>Hapus</span></button>`:''}
+        </div>
+        <p class="dim sm2" style="margin:0">${hint}</p>
+      </div>
+    </div>
+    <input type="file" id="${fileId}" accept="image/png,image/jpeg,image/webp" hidden>
+  </div>`;
+}
+function vIdentitas(){
+  head('Identitas Madrasah','Kop ganda lambang, data madrasah, tanda tangan rapor, dan ilustrasi login.');
+  const s=DB.settings;
+  $('#view').innerHTML=`<form id="fIdent" class="card pad form-grid">
+    <div class="logo-grid full">
+      ${logoCell('Logo Madrasah — tampil di KANAN kop','Unggah logo madrasah; posisinya di sebelah kanan kop rapor. Jika kosong, dipakai lambang bawaan.','logoFile','logo-upload','logo-del',s.logo)}
+      ${logoCell('Lambang Kemenag — tampil di KIRI kop','Unggah lambang Kemenag/yayasan; posisinya di sebelah kiri kop rapor. Jika kosong, dipakai lambang bawaan.','logoFile2','logo-upload2','logo-del2',s.logo2)}
+    </div>
+    <div class="full" style="margin-top:4px">
+      <div class="logo-cell">
+        <span>Ilustrasi Halaman Login (opsional)</span>
+        <div class="logo-ctl">
+          <div class="logo-prev art-prev">${s.artLogin?`<img src="${esc(s.artLogin)}" alt="">`:'<i data-lucide="image"></i>'}</div>
+          <div class="logo-btns">
+            <div class="btnrow">
+              <button type="button" class="btn ghost sm" data-act="art-upload"><i data-lucide="upload"></i><span>Unggah</span></button>
+              ${s.artLogin? `<button type="button" class="btn danger-outline sm" data-act="art-del"><i data-lucide="trash-2"></i><span>Hapus</span></button>`:''}
+            </div>
+            <div class="art-url">
+              <input id="artUrl" placeholder="atau tempel URL gambar (https://…) / data URL" value="${/^https?:/i.test(s.artLogin||'')?esc(s.artLogin):''}">
+              <button type="button" class="btn ghost sm" data-act="art-url"><i data-lucide="link"></i><span>Gunakan URL</span></button>
+            </div>
+            <p class="dim sm2" style="margin:0">Tampil di panel kanan halaman login. Unggah otomatis diperkecil maks. 720 px &amp; ikut tersimpan ke server; URL hanya tampil saat online.</p>
+          </div>
+        </div>
+        <input type="file" id="artFile" accept="image/png,image/jpeg,image/webp" hidden>
+      </div>
+    </div>
+    ${fld('nama','Nama Madrasah (tanpa "MTs")','Darul Falah',s.nama)}
+    ${fld('nsm','NSM','121233017000',s.nsm)}
+    ${fld('npsn','NPSN','20219876',s.npsn)}
+    ${fld('telepon','Telepon (tampil di kop, tidak di tabel identitas)','(0263) 512441',s.telepon)}
+    ${fld('alamat','Alamat Lengkap','Jl. …',s.alamat,'text','full')}
+    ${fld('kota','Kota / Kecamatan (untuk tanggal rapor)','Kertasemaya',s.kota)}
+    ${fld('tanggalRapor','Tanggal Pembagian Rapor','20 Desember 2025',s.tanggalRapor)}
+    ${fld('kepala','Kepala Madrasah','',s.kepala)}
+    ${fld('nipKepala','NIP Kepala Madrasah','',s.nipKepala)}
+    ${fld('tahun','Tahun Ajaran','2025/2026',s.tahun)}
+    <label class="fld"><span>Semester</span><select name="semester">
+      <option value="1" ${s.semester==='1'?'selected':''}>1 — Ganjil</option>
+      <option value="2" ${s.semester==='2'?'selected':''}>2 — Genap</option></select></label>
+    <div class="form-foot"><button class="btn primary" type="submit"><i data-lucide="check"></i><span>Simpan Identitas</span></button></div>
+  </form>`;
+  $('#logoFile')?.addEventListener('change',e=>{
+    const f=e.target.files[0]; e.target.value=''; if(!f) return;
+    prosesLogo(f,url=>{ DB.settings.logo=url; save(); vIdentitas(); refreshIcons(); toast('Logo madrasah tersimpan'); });
+  });
+  $('#logoFile2')?.addEventListener('change',e=>{
+    const f=e.target.files[0]; e.target.value=''; if(!f) return;
+    prosesLogo(f,url=>{ DB.settings.logo2=url; save(); vIdentitas(); refreshIcons(); toast('Lambang Kemenag tersimpan'); });
+  });
+  $('#artFile')?.addEventListener('change',e=>{
+    const f=e.target.files[0]; e.target.value=''; if(!f) return;
+    prosesLogo(f,url=>{
+      if(url.length>900000) toast('Gambar cukup besar — perhatikan ruang penyimpanan','warn');
+      DB.settings.artLogin=url; save(); vIdentitas(); refreshIcons(); toast('Ilustrasi login tersimpan');
+    },720);
+  });
+  $('#fIdent').addEventListener('submit',e=>{ e.preventDefault();
+    const f=new FormData(e.target);
+    for(const [k,v] of f.entries()) DB.settings[k]=String(v).trim();
+    save(); toast('Identitas madrasah tersimpan'); });
+}
+
+/* ================= VIEW: KELAS & MAPEL ================= */
+function vKelas(){
+  head('Kelas & Mata Pelajaran', isWali()? 'Struktur kelas Anda (khusus Admin/operator yang dapat mengubah struktur).':'Atur kelas, wali kelas, dan daftar mapel per kelas.',
+    isWali()? waliChip() : btn('Tambah Kelas','add-kelas'));
+  const panels=kelasAkses().map(k=>{
+    const mrows=k.mapel.map((m,i)=>`<tr>
+      <td class="num">${i+1}</td>
+      <td><input class="tinp" data-bind="mapel-nama" data-kid="${k.id}" data-mid="${m.id}" value="${esc(m.nama)}"></td>
+      <td class="dim mono">${siswaOf(k.id).filter(s=>getNil(s.id,m.id)!=null).length} nilai</td>
+      <td class="row-acts">
+        <button class="ibtn" data-act="mapel-up" data-kid="${k.id}" data-mid="${m.id}" ${i===0?'disabled':''} title="Naik"><i data-lucide="arrow-up"></i></button>
+        <button class="ibtn" data-act="mapel-down" data-kid="${k.id}" data-mid="${m.id}" ${i===k.mapel.length-1?'disabled':''} title="Turun"><i data-lucide="arrow-down"></i></button>
+        ${isWali()? '' : `<button class="ibtn danger" data-act="del-mapel" data-kid="${k.id}" data-mid="${m.id}" title="Hapus"><i data-lucide="trash-2"></i></button>`}
+      </td></tr>`).join('');
+    return `<div class="card kpanel">
+      <div class="khead">
+        <div class="kname"><input class="tinp" data-bind="kelas-nama" data-kid="${k.id}" value="${esc(k.nama)}"></div>
+        <div class="kwali">
+          <input class="tinp" data-bind="kelas-wali" data-kid="${k.id}" value="${esc(k.wali||'')}" placeholder="Wali kelas">
+          <input class="tinp" data-bind="kelas-nip" data-kid="${k.id}" value="${esc(k.nipWali||'')}" placeholder="NIP wali kelas">
+        </div>
+        <div class="row-acts"><span class="chip">${siswaOf(k.id).length} siswa</span>
+          ${isWali()? '' : `<button class="ibtn danger" data-act="del-kelas" data-kid="${k.id}" title="Hapus kelas"><i data-lucide="trash-2"></i></button>`}</div>
+      </div>
+      <div class="kscroll"><table class="tbl t-mapel"><thead><tr><th>No</th><th>Mata Pelajaran</th><th style="width:86px">Terisi</th><th style="width:118px"></th></tr></thead><tbody>${mrows}</tbody></table></div>
+      ${isWali()? '' : `<div class="kfoot"><button class="btn ghost sm" data-act="add-mapel" data-kid="${k.id}"><i data-lucide="plus"></i><span>Tambah Mapel</span></button></div>`}
+    </div>`;
+  }).join('');
+  $('#view').innerHTML= panels || emptyKelas(isWali()? 'Kelas Anda belum tersedia.' : 'Belum ada kelas. Tambahkan kelas terlebih dahulu sebelum mengelola siswa dan nilai.');
+}
+function modalKelas(){
+  openModal(`<form id="fKelas" class="mform">
+    <h3>Tambah Kelas</h3>
+    <div class="mgrid">
+      ${fld('nama','Nama Kelas *','VII.1')}
+      ${fld('wali','Wali Kelas','Nama, S.Pd.')}
+      ${fld('nip','NIP Wali Kelas','', '', 'text','wide2')}
+    </div>
+    <label class="chk"><input type="checkbox" name="defmapel" checked> Isi otomatis mapel Kurikulum Merdeka MTs (${DEFAULT_MAPEL.length} mapel)</label>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="plus"></i><span>Tambah</span></button></div>
+  </form>`,m=>{ $('#fKelas',m).addEventListener('submit',e=>{ e.preventDefault();
+    const f=new FormData(e.target), nama=String(f.get('nama')).trim();
+    if(!nama) return toast('Nama kelas wajib diisi','err');
+    DB.kelas.push({id:uid(),nama,wali:String(f.get('wali')||'').trim(),nipWali:String(f.get('nip')||'').trim(),
+      mapel:f.get('defmapel')? DEFAULT_MAPEL.map(x=>({id:uid(),nama:x})):[]});
+    save(); m.remove(); render(); toast('Kelas '+nama+' ditambahkan'); }) });
+}
+function modalMapel(kid){
+  openModal(`<form id="fMap" class="mform">
+    <h3>Tambah Mata Pelajaran</h3>
+    <label class="fld"><span>Nama Mapel *</span><input name="nama" required placeholder="mis. Bahasa Sunda (Mulok)"></label>
+    <label class="chk"><input type="checkbox" name="semua"> Tambahkan juga ke semua kelas lain</label>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="plus"></i><span>Tambah</span></button></div>
+  </form>`,m=>{ $('#fMap',m).addEventListener('submit',e=>{ e.preventDefault();
+    const f=new FormData(e.target), nm=String(f.get('nama')).trim(); if(!nm) return;
+    if(f.get('semua')) DB.kelas.forEach(k=>k.mapel.push({id:uid(),nama:nm}));
+    else kelasById(kid).mapel.push({id:uid(),nama:nm});
+    save(); m.remove(); render(); toast('Mapel "'+nm+'" ditambahkan'); }) });
+}
+
+/* ================= VIEW: SISWA ================= */
+function vSiswa(){
+  if(isWali()) ui.filterKelas=ME.kelasId;
+  head('Data Siswa','Tambah, sunting, dan urutkan peserta didik per kelas.',
+    (isWali()? waliChip()+' ' : '')+btn('Tambah Siswa','add-siswa')+' '+btn('Impor Cepat','impor-siswa','ghost','file-plus')+' '+btn('Update dari Excel','update-siswa','ghost','refresh-cw')+' '+btn('Rapikan Nomor','rapikan-nomor','ghost','list-ol'));
+  const kelasCtl = isWali()
+    ? `<span class="chip ok">Kelas: ${esc(kelasById(ME.kelasId)?.nama||'—')}</span>`
+    : `<label class="fld sm"><span>Kelas</span>
+      <select data-bind="ui-kelas" data-key="filterKelas">
+        <option value="all" ${ui.filterKelas==='all'?'selected':''}>Semua kelas</option>
+        ${DB.kelas.map(k=>`<option value="${k.id}" ${ui.filterKelas===k.id?'selected':''}>${esc(k.nama)}</option>`).join('')}
+      </select></label>`;
+  $('#view').innerHTML=`<div class="card ctl">
+    ${kelasCtl}
+    <label class="fld sm grow"><span>Cari nama / NIS / NISN</span>
+      <input data-bind="ui-q" value="${esc(ui.q)}" placeholder="Ketik untuk mencari…"></label>
+  </div>
+  <div class="card"><div class="kscroll"><table class="tbl t-siswa" style="min-width:860px">
+    <thead><tr><th>No</th><th>NIS</th><th>NISN</th><th>Nama</th><th>L/P</th><th>Kelas</th><th style="width:186px"></th></tr></thead>
+    <tbody id="siswaBody"></tbody></table></div></div>`;
+  updateSiswaRows();
+}
+function updateSiswaRows(){
+  const q=ui.q.trim().toLowerCase();
+  let list=DB.siswa.slice();
+  if(ui.filterKelas!=='all') list=list.filter(s=>s.kelasId===ui.filterKelas);
+  if(isWali()) list=list.filter(s=>s.kelasId===ME.kelasId);
+  if(q) list=list.filter(s=>s.nama.toLowerCase().includes(q)||String(s.nis).includes(q)||String(s.nisn).includes(q));
+  const kOrder=Object.fromEntries(kelasAkses().map((k,i)=>[k.id,i]));
+  list.sort((a,b)=>(kOrder[a.kelasId]-kOrder[b.kelasId])||(a.urutan-b.urutan)||a.nama.localeCompare(b.nama));
+  const rows=list.map(s=>{ const k=kelasById(s.kelasId), sorted=siswaOf(s.kelasId), i=sorted.findIndex(x=>x.id===s.id);
+    return `<tr>
+      <td class="num">${s.urutan}</td>
+      <td class="mono">${esc(s.nis)||'—'}</td>
+      <td class="mono">${esc(s.nisn)||'—'}</td>
+      <td><b>${esc(s.nama)}</b><div class="dim sm2">${esc(s.tempatLahir||'')}${s.tglLahir?', '+fmtDate(s.tglLahir):''}</div></td>
+      <td>${s.jk==='P'?'P':'L'}</td>
+      <td><span class="chip">${esc(k?.nama||'—')}</span></td>
+      <td class="row-acts">
+        <button class="ibtn" data-act="siswa-up" data-id="${s.id}" ${i<=0?'disabled':''} title="Naikkan urutan"><i data-lucide="arrow-up"></i></button>
+        <button class="ibtn" data-act="siswa-down" data-id="${s.id}" ${i>=sorted.length-1?'disabled':''} title="Turunkan urutan"><i data-lucide="arrow-down"></i></button>
+        <button class="ibtn" data-act="print-siswa" data-id="${s.id}" title="Pratinjau rapor"><i data-lucide="printer"></i></button>
+        <button class="ibtn" data-act="edit-siswa" data-id="${s.id}" title="Sunting"><i data-lucide="pencil"></i></button>
+        <button class="ibtn danger" data-act="del-siswa" data-id="${s.id}" title="Hapus"><i data-lucide="trash-2"></i></button>
+      </td></tr>` }).join('');
+  $('#siswaBody').innerHTML= rows || `<tr><td colspan="7" class="empty-cell">Tidak ada siswa${q?' yang cocok':''}.${DB.kelas.length? ' '+btn('Tambah Siswa','add-siswa','ghost sm'):''}</td></tr>`;
+  refreshIcons();
+}
+const debRows=debounce(updateSiswaRows,220);
+function modalSiswa(edit){
+  const s=edit? siswaById(edit):null;
+  const defK= isWali()? ME.kelasId : (s? s.kelasId : kelasAkses()[0]?.id);
+  openModal(`<form id="fSis" class="mform">
+    <h3>${s?'Sunting Siswa':'Tambah Siswa'}</h3>
+    <div class="mgrid">
+      <label class="fld"><span>Kelas *</span><select name="kelasId">${kelasAkses().map(k=>`<option value="${k.id}" ${k.id===defK?'selected':''}>${esc(k.nama)}</option>`).join('')}</select></label>
+      ${fld('urutan','Urutan','',s? s.urutan : siswaOf(defK).length+1,'number')}
+      ${fld('nama','Nama Lengkap *','Nama siswa',s?.nama,'text','wide2')}
+      <label class="fld"><span>Jenis Kelamin</span><select name="jk">
+        <option value="L" ${s?.jk!=='P'?'selected':''}>Laki-laki</option>
+        <option value="P" ${s?.jk==='P'?'selected':''}>Perempuan</option></select></label>
+      ${fld('agama','Agama (arsip — tidak dicetak)','Islam',s?.agama)}
+      ${fld('nis','NIS','',s?.nis)}
+      ${fld('nisn','NISN','',s?.nisn)}
+      ${fld('tempatLahir','Tempat Lahir','',s?.tempatLahir)}
+      ${fld('tglLahir','Tanggal Lahir','',s?.tglLahir,'date')}
+      ${fld('ayah','Nama Ayah (arsip — tidak dicetak)','',s?.ayah)}
+      ${fld('ibu','Nama Ibu (arsip — tidak dicetak)','',s?.ibu)}
+      <label class="fld wide2"><span>Alamat (arsip — tidak dicetak di rapor)</span><textarea name="alamat" rows="2">${esc(s?.alamat||'')}</textarea></label>
+    </div>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="check"></i><span>Simpan</span></button></div>
+  </form>`,m=>{ $('#fSis',m).addEventListener('submit',e=>{ e.preventDefault();
+    const f=new FormData(e.target), o={}; f.forEach((v,k2)=>o[k2]=String(v).trim());
+    if(!o.nama) return toast('Nama wajib diisi','err');
+    if(isWali()&&o.kelasId!==ME.kelasId) return toast('Wali Kelas hanya dapat menambah siswa pada kelasnya','err');
+    o.urutan=+o.urutan||1;
+    let kelasLama=null;
+    if(s){ kelasLama=s.kelasId; Object.assign(s,o); } else DB.siswa.push({id:uid(),...o});
+    renumberKelas(o.kelasId); if(kelasLama&&kelasLama!==o.kelasId) renumberKelas(kelasLama);
+    save(); m.remove(); ui.route==='siswa'? updateSiswaRows(): render();
+    toast(s?'Data siswa diperbarui':'Siswa "'+o.nama+'" ditambahkan'); }) });
+}
+
+/* ===== IMPOR SISWA v2.0.6: pilih kelas + nama/tabel + anti-dobel + tanggal Indonesia ===== */
+const FIELD_SISWA={nama:'Nama',nis:'NIS',nisn:'NISN',jk:'L/P',tempatLahir:'Tempat Lahir',tglLahir:'Tanggal Lahir',ttl:'Tempat & Tgl Lahir',agama:'Agama',ayah:'Nama Ayah',ibu:'Nama Ibu',alamat:'Alamat'};
+const BULAN_ID={januari:1,jan:1,februari:2,feb:2,maret:3,mar:3,april:4,apr:4,mei:5,juni:6,jun:6,juli:7,jul:7,agustus:8,agu:8,agt:8,ags:8,september:9,sep:9,oktober:10,okt:10,november:11,nov:11,desember:12,des:12};
+function normNama_(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' ') }
+function kolomSiswa_(c){
+  const t=String(c||'').trim().toLowerCase().replace(/\./g,'');
+  if(!t) return null;
+  if(t==='ttl') return 'ttl';
+  if(t.indexOf('ayah')>=0||t.indexOf('bapak')>=0) return 'ayah';
+  if(t.indexOf('ibu')>=0) return 'ibu';
+  if(t.indexOf('alamat')>=0) return 'alamat';
+  if(t.indexOf('nisn')>=0) return 'nisn';
+  if(t==='nis'||/(^| )nis( |$)/.test(t)) return 'nis';
+  if(t==='l/p'||t==='lp'||t==='jk'||t==='gender'||t.indexOf('kelamin')>=0) return 'jk';
+  if(t.indexOf('tempat')>=0&&t.indexOf('lahir')>=0) return 'ttl';
+  if(t.indexOf('tempat')>=0) return 'tempatLahir';
+  if(t.indexOf('lahir')>=0) return 'tglLahir';
+  if(t.indexOf('agama')>=0) return 'agama';
+  if(t.indexOf('nama')===0||t==='nm') return 'nama';
+  return null;
+}
+function normJK_(c){
+  const t=String(c||'').trim().toLowerCase();
+  if(!t) return 'L';
+  return /^(p|per|perempuan|wanita|cewek|w|f|pr)$/.test(t)? 'P':'L';
+}
+function normTanggal_(c){
+  const s=String(c||'').trim(); if(!s) return '';
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return m[1]+'-'+String(+m[2]).padStart(2,'0')+'-'+String(+m[3]).padStart(2,'0');
+  m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+  if(m) return m[3]+'-'+String(+m[2]).padStart(2,'0')+'-'+String(+m[1]).padStart(2,'0');
+  m=s.match(/^(\d{1,2})[\s\-\/]+([A-Za-z]+)[\s\-\/]+(\d{4})/);
+  if(m){ const b=BULAN_ID[m[2].toLowerCase()];
+    if(b) return m[3]+'-'+String(b).padStart(2,'0')+'-'+String(+m[1]).padStart(2,'0') }
+  const n=parseFloat(s);
+  if(!isNaN(n)&&n>=20000&&n<=80000){ const d=new Date(Math.round((n-25569)*86400000)); return d.toISOString().slice(0,10) }
+  return '';
+}
+function parseImporSiswa(text,kelasId){
+  if(!DB||!Array.isArray(DB.siswa)){
+    toast('Data aplikasi belum siap — muat ulang halaman (Ctrl+Shift+R) lalu coba lagi','err');
+    return {rows:[],takDikenal:[],duplikat:[],kolom:[]};
+  }
+  const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());
+  const cells=lines.map(l=> l.indexOf('\t')>=0? l.split('\t') : (l.indexOf(';')>=0? l.split(';') : [l]))
+    .map(r=>r.map(c=>c.trim()));
+  const URUTAN=['nama','nis','nisn','jk','tempatLahir','tglLahir','agama','ayah','ibu','alamat'];
+  let kolom=URUTAN, start=0;
+  const first=cells[0]||[];
+  if(first.length>1){
+    const mapped=first.map(kolomSiswa_);
+    if(mapped.filter(Boolean).length>=2){ kolom=mapped; start=1 }
+  }
+  const rows=[], takDikenal=[], duplikat=[], kunci=new Set();
+  for(let i=start;i<cells.length;i++){
+    const r=cells[i];
+    if(!r||!r.some(c=>c)) continue;
+    if(r.length===1){
+      const nm=r[0]; if(!nm) continue;
+      const kNama=normNama_(nm);
+      if(kunci.has('nm:'+kNama)||(kelasId&&DB.siswa.some(x=>x.kelasId===kelasId&&normNama_(x.nama)===kNama))){ duplikat.push(nm); continue }
+      kunci.add('nm:'+kNama);
+      rows.push({nama:nm}); continue; }
+    const o={};
+    r.forEach((c,j)=>{ const k=kolom[j]; if(!k||!c) return;
+      if(k==='jk') o.jk=normJK_(c);
+      else if(k==='tglLahir'){ const d=normTanggal_(c); if(d) o.tglLahir=d }
+      else if(k==='ttl'){ const p=c.split(','); o.tempatLahir=(p[0]||'').trim();
+        const d=normTanggal_(p[1]||''); if(d) o.tglLahir=d }
+      else o[k]=c; });
+    if(!o.nama){ takDikenal.push(r[0]||'(tanpa nama)'); continue }
+    const k1=o.nisn?'n:'+o.nisn:'', k2=o.nis?'s:'+o.nis:'', kNama=normNama_(o.nama);
+    const samaNama= kelasId? DB.siswa.some(x=>x.kelasId===kelasId&&normNama_(x.nama)===kNama) : false;
+    if((k1&&(kunci.has(k1)||DB.siswa.some(x=>String(x.nisn||'')===o.nisn)))
+     ||(k2&&(kunci.has(k2)||DB.siswa.some(x=>String(x.nis||'')===o.nis)))
+     ||kunci.has('nm:'+kNama)||samaNama){
+      duplikat.push(o.nama); continue; }
+    if(k1) kunci.add(k1); if(k2) kunci.add(k2);
+    kunci.add('nm:'+kNama);
+    rows.push(o);
+  }
+  return { rows, takDikenal, duplikat, kolom: kolom.filter(Boolean) };
+}
+function modalImpor(){
+  const defK= isWali()? ME.kelasId : kelasAkses()[0]?.id;
+  if(!kelasById(defK)){ toast('Pilih kelas terlebih dahulu','err'); return }
+  const kelasCtl= isWali()
+    ? `<label class="fld"><span>Kelas Tujuan</span><span class="chip ok" style="margin-top:4px">Wali Kelas — ${esc(kelasById(defK)?.nama||'—')}</span></label>`
+    : `<label class="fld"><span>Kelas Tujuan</span><select id="impKelas">
+        ${kelasAkses().map(k=>`<option value="${k.id}" ${k.id===defK?'selected':''}>${esc(k.nama)}</option>`).join('')}</select></label>`;
+  openModal(`<form id="fImp" class="mform">
+    <h3>Impor Siswa</h3>
+    <div style="margin:0 0 12px">${kelasCtl}</div>
+    <p class="dim" style="margin:0 0 12px">Tempel dari Excel/Google Sheets. <b>Cukup nama</b> (satu nama per baris) atau <b>tabel lengkap</b> dengan baris judul: Nama, NIS, NISN, L/P, Tempat Lahir, Tanggal Lahir, Agama, Ayah, Ibu, Alamat.</p>
+    <label class="fld"><span>Tempel Data</span>
+      <textarea id="impSiswa" rows="10" placeholder="Nama&#9;NIS&#9;NISN&#9;L/P&#9;Tempat, Tanggal Lahir&#10;Ahmad Fulan&#9;2025001&#9;0051234567&#9;L&#9;Majalengka, 12/05/2012"></textarea></label>
+    <div class="btnrow" style="margin-top:8px">
+      <button type="button" class="btn ghost sm" id="impSFileBtn"><i data-lucide="file-up"></i><span>Pilih Berkas CSV/TXT</span></button>
+      <input type="file" id="impSFile" accept=".csv,.txt,text/csv,text/plain" hidden>
+    </div>
+    <p class="dim sm2" style="margin:8px 0 0">Pemisah: Tab (dari Excel) atau titik koma (CSV). Tanggal mendukung 17/05/2013, 2013-05-17, dan 17 Mei 2013. Duplikat (NIS/NISN sama, atau nama sama di kelas tujuan) otomatis dilewati.</p>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="file-plus"></i><span>Pratinjau Impor</span></button></div>
+  </form>`,m=>{
+    $('#impSFileBtn',m).onclick=()=>$('#impSFile',m).click();
+    $('#impSFile',m).addEventListener('change',e=>{ const f=e.target.files[0]; e.target.value=''; if(!f) return;
+      const r=new FileReader(); r.onload=()=>{ $('#impSiswa',m).value=String(r.result||'') }; r.readAsText(f); });
+    $('#fImp',m).addEventListener('submit',ev=>{ ev.preventDefault();
+      const kid= isWali()? defK : ($('#impKelas',m)?.value||defK);
+      if(!kelasById(kid)){ toast('Kelas tujuan tidak valid','err'); return }
+      const res=parseImporSiswa($('#impSiswa',m).value, kid);
+      if(!res.rows.length){ toast('Tidak ada data baru yang dikenali — semua mungkin sudah ada','warn'); return }
+      if(res.takDikenal.length) toast(res.takDikenal.length+' baris dilewati (nama kosong)','warn');
+      openModal(`<div class="mform"><h3>Konfirmasi Impor Siswa</h3>
+        <p class="dim" style="margin:0 0 6px"><b>${res.rows.length} siswa</b> akan ditambahkan ke kelas <b>${esc(kelasById(kid)?.nama||'')}</b>.</p>
+        <p class="dim sm2" style="margin:0 0 6px">Kolom terbaca: ${res.kolom.map(k=>FIELD_SISWA[k]||k).join(' · ')||'—'}.</p>
+        ${res.duplikat.length? `<p class="chip bad" style="margin:0 0 6px">${res.duplikat.length} dilewati (sudah ada di kelas ini): ${esc(res.duplikat.slice(0,3).join(', '))}${res.duplikat.length>3?' …':''}</p>`:''}
+        <p class="dim sm2" style="margin:0 0 14px">Data yang kosong bisa dilengkapi belakangan lewat menu Siswa.</p>
+        <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+        <button type="button" class="btn primary" id="impSGo"><i data-lucide="check"></i><span>Terapkan</span></button></div></div>`,
+        m2=>{ $('#impSGo',m2).onclick=()=>{
+          const base=siswaOf(kid).length;
+          res.rows.forEach((o,i)=>DB.siswa.push({id:uid(),kelasId:kid,urutan:base+i+1,jk:'L',agama:'Islam',...o}));
+          renumberKelas(kid);
+          save(); m.remove(); m2.remove(); render();
+          toast(res.rows.length+' siswa diimpor ke '+kelasById(kid)?.nama); } });
+    });
+  });
+}
+
+/* ================= IMPOR NILAI ================= */
+function normTeks_(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,' ') }
+function cariSiswaImpor_(q,sw){
+  const s=normTeks_(q); if(!s) return null;
+  const num=parseInt(s,10);
+  return sw.find(x=>String(x.nis||'').trim()===s)||sw.find(x=>String(x.nisn||'').trim()===s)
+    ||sw.find(x=>normTeks_(x.nama)===s)||sw.find(x=>normTeks_(x.nama).startsWith(s))
+    ||(!isNaN(num)&&String(num)===s? sw.find(x=>x.urutan===num):null)||null;
+}
+function angkaNilai_(c){
+  const m=String(c||'').replace(',', '.').match(/-?\d+(\.\d+)?/);
+  if(!m) return null;
+  const n=Math.round(parseFloat(m[0]));
+  return (n>=0&&n<=100)? n : null;
+}
+function parseImporNilai(text,sw,mp,mode,midSatu){
+  const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());
+  const cells=lines.map(l=> l.indexOf('\t')>=0? l.split('\t') : (l.indexOf(';')>=0? l.split(';') : [l]))
+    .map(r=>r.map(c=>c.trim()));
+  const pasangan=[], takDikenal=[]; let idx=0;
+  if(mode==='satu'){
+    cells.forEach(r=>{
+      if(r.length===1){ const v=angkaNilai_(r[0]);
+        if(v==null){ takDikenal.push(r[0]||'(kosong)'); return }
+        const s=sw[idx++]; if(s) pasangan.push([s.id,midSatu,v]); return; }
+      const s=cariSiswaImpor_(r[0],sw), v=angkaNilai_(r[r.length-1]);
+      if(!s||v==null){ takDikenal.push(r[0]); return }
+      pasangan.push([s.id,midSatu,v]);
+    });
+  }else{
+    const cocokMapel=c=>{ const t=normTeks_(c).replace(/[^a-z0-9 ]/g,''); if(!t) return null;
+      return mp.find(mm=>normTeks_(mm.nama)===t)
+        ||(t.length>=3? mp.find(mm=>normTeks_(mm.nama).includes(t)):null)
+        ||mp.find(mm=>abbr(mm.nama).toLowerCase()===t)||null; };
+    let start=0, kolom=mp;
+    const first=cells[0]||[];
+    if(first.length>1 && /nama|nis/i.test(first[0]||'')){ start=1 }
+    else if(first.length>1 && first.slice(1).some(c=>c) && first.slice(1).every(c=>!c||cocokMapel(c))){
+      kolom=first.slice(1).map(cocokMapel); start=1; }
+    for(let i=start;i<cells.length;i++){
+      const r=cells[i]; if(!r||!r[0]) continue;
+      const s=cariSiswaImpor_(r[0],sw);
+      if(!s){ if(r.some(c=>c)) takDikenal.push(r[0]); continue }
+      for(let j=1;j<r.length;j++){ const mm=kolom[j-1]; if(!mm) break;
+        if(r[j]==='') continue; const v=angkaNilai_(r[j]); if(v==null) continue;
+        pasangan.push([s.id,mm.id,v]); }
+    }
+  }
+  let baru=0,timpa=0; const terdampak=new Set(), daftar=[];
+  pasangan.forEach(([sid,mid,v])=>{ const key=nilKey(sid,mid), lama=DB.nilai[key];
+    if(lama==null) baru++; else if(lama!==v) timpa++;
+    terdampak.add(sid); daftar.push([key,v]); });
+  return { total:pasangan.length, baru, timpa, takDikenal, siswa:terdampak.size,
+    terapkan(){ daftar.forEach(([key,v])=>{ DB.nilai[key]=v }); save(); } };
+}
+function modalImporNilai(){
+  const k=kelasById(ui.nilaiKelas); if(!k) return;
+  const mp=k.mapel, sw=siswaOf(k.id);
+  if(!mp.length){ toast('Kelas belum memiliki mapel','err'); return }
+  openModal(`<form id="fImpN" class="mform">
+    <h3>Impor Nilai — ${esc(k.nama)}</h3>
+    <div class="mgrid">
+      <label class="fld"><span>Mode Impor</span><select id="impMode">
+        <option value="satu">Satu mapel (satu kolom nilai)</option>
+        <option value="tabel">Beberapa mapel (tabel Excel)</option></select></label>
+      <label class="fld" id="impMapelWrap"><span>Mata Pelajaran</span><select id="impMapel">
+        ${mp.map(mm=>`<option value="${mm.id}">${esc(mm.nama)}</option>`).join('')}</select></label>
+    </div>
+    <label class="fld" style="margin-top:12px"><span>Tempel Data</span>
+      <textarea id="impData" rows="9" placeholder="Tempel di sini dari Excel/Google Sheets…"></textarea></label>
+    <div class="btnrow" style="margin-top:8px">
+      <button type="button" class="btn ghost sm" id="impFileBtn"><i data-lucide="file-up"></i><span>Pilih Berkas CSV/TXT</span></button>
+      <input type="file" id="impFile" accept=".csv,.txt,text/csv,text/plain" hidden>
+    </div>
+    <p class="dim sm2" style="margin:8px 0 0"><b>Satu mapel:</b> satu nilai per baris sesuai urutan siswa, atau <i>Nama [Tab] Nilai</i>. <b>Tabel:</b> kolom pertama nama/NIS/No urut, baris pertama judul mapel (boleh disingkat). Pemisah: Tab atau titik koma. Nilai 0–100, koma desimal diperbolehkan.</p>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="upload"></i><span>Pratinjau Impor</span></button></div>
+  </form>`,m=>{
+    const modeSel=$('#impMode',m), wrap=$('#impMapelWrap',m);
+    modeSel.addEventListener('change',()=>{ wrap.style.display= modeSel.value==='satu'?'':'none' });
+    $('#impFileBtn',m).onclick=()=>$('#impFile',m).click();
+    $('#impFile',m).addEventListener('change',e=>{ const f=e.target.files[0]; e.target.value=''; if(!f) return;
+      const r=new FileReader(); r.onload=()=>{ $('#impData',m).value=String(r.result||'') }; r.readAsText(f); });
+    $('#fImpN',m).addEventListener('submit',ev=>{ ev.preventDefault();
+      const res=parseImporNilai($('#impData',m).value, sw, mp, modeSel.value, $('#impMapel',m).value);
+      if(!res.total){ toast('Tidak ada nilai yang dikenali — periksa tempelan','err'); return }
+      if(res.takDikenal.length) toast(res.takDikenal.length+' baris dilewati (tidak cocok): '+res.takDikenal.slice(0,3).join('; ')+(res.takDikenal.length>3?' …':''),'warn');
+      openModal(`<div class="mform"><h3>Konfirmasi Impor</h3>
+        <p class="dim" style="margin:0 0 6px"><b>${res.total} nilai</b> terdeteksi untuk <b>${res.siswa} siswa</b> — ${res.baru} baru, ${res.timpa} akan ditimpa.</p>
+        <p class="dim" style="margin:0 0 14px">Lanjutkan menerapkan ke kelas ${esc(k.nama)}?</p>
+        <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+        <button type="button" class="btn primary" id="impGo"><i data-lucide="check"></i><span>Terapkan</span></button></div></div>`,
+        m2=>{ $('#impGo',m2).onclick=()=>{ res.terapkan(); m.remove(); m2.remove(); render();
+          toast(res.total+' nilai diimpor ('+res.baru+' baru, '+res.timpa+' diperbarui)'); } });
+    });
+  });
+}
+
+/* ================= VIEW: DESKRIPSI ================= */
+function vDeskripsi(){
+  ui.deskKelas=curKelas(ui.deskKelas);
+  head('Deskripsi Capaian Kompetensi','Narasi capaian per mapel — tercetak pada kolom rapor.',
+    (isWali()? waliChip()+' ':'')+btn('Generate Semua','gen-desk-all','primary','sparkles'));
+  if(!ui.deskKelas){ $('#view').innerHTML=emptyKelas(); return }
+  const k=kelasById(ui.deskKelas), mp=k.mapel;
+  if(!mp.find(m=>m.id===ui.deskMapel)) ui.deskMapel=mp[0]?.id;
+  const m=mapelById(ui.deskKelas,ui.deskMapel);
+  if(!m){ $('#view').innerHTML=`<div class="card pad empty">Kelas ini belum memiliki mapel.<div class="btnrow" style="justify-content:center;margin-top:12px"><button class="btn ghost sm" data-nav="kelas">Kelola Mapel</button></div></div>`; return }
+  const sw=siswaOf(ui.deskKelas);
+  const rows=sw.map(s=>{ const v=getNil(s.id,m.id), p=predVal(v);
+    return `<div class="desk-row">
+      <div class="desk-id">
+        <b>${esc(s.nama)}</b>
+        <span class="badge ${p?'p'+p:''}">${v!=null? v+' · '+PRED_LABEL[p] : 'nilai belum diisi'}</span>
+        <button class="ibtn" data-act="gen-desk-one" data-id="${s.id}" title="Isi otomatis dari predikat"><i data-lucide="sparkles"></i></button>
+      </div>
+      <textarea class="dtx" rows="3" data-bind="deskripsi" data-sid="${s.id}" data-mid="${m.id}" placeholder="Deskripsi capaian kompetensi…">${esc(DB.deskripsi[nilKey(s.id,m.id)]||'')}</textarea>
+      <span class="saveflag">tersimpan</span>
+    </div>` }).join('');
+  const kelasCtl = isWali()
+    ? `<span class="chip ok">Wali Kelas — ${esc(k.nama)}</span>`
+    : `<label class="fld sm"><span>Kelas</span><select data-bind="ui-kelas" data-key="deskKelas">${kelasOptions(ui.deskKelas)}</select></label>`;
+  $('#view').innerHTML=`<div class="card pad">
+    <div class="desk-ctl">
+      ${kelasCtl}
+      <label class="fld sm"><span>Mata Pelajaran</span><select data-bind="ui-kelas" data-key="deskMapel">
+        ${mp.map(x=>`<option value="${x.id}" ${x.id===m.id?'selected':''}>${esc(x.nama)}</option>`).join('')}</select></label>
+      <div style="flex:1"></div><span class="chip" id="deskCount"></span>
+    </div>
+    <p class="dim sm2" style="margin:0 0 6px">Tombol berkilau di samping nama mengisi deskripsi otomatis berdasarkan predikat nilai.</p>
+    ${rows||`<div class="empty">Belum ada siswa di kelas ini.</div>`}
+  </div>`;
+  updateDeskCount();
+}
+function updateDeskCount(){ const el=$('#deskCount'); if(!el) return;
+  const sw=siswaOf(ui.deskKelas), mid=ui.deskMapel;
+  const n=sw.filter(s=>(DB.deskripsi[nilKey(s.id,mid)]||'').trim()).length;
+  el.textContent=`${n} / ${sw.length} deskripsi terisi`; }
+function genDeskAll(){
+  const m=mapelById(ui.deskKelas,ui.deskMapel); if(!m) return;
+  let n=0,skip=0;
+  siswaOf(ui.deskKelas).forEach(s=>{ const v=getNil(s.id,m.id);
+    if(v==null){skip++;return} DB.deskripsi[nilKey(s.id,m.id)]=autoDesk(s.nama,m.nama,v); n++ });
+  save(); vDeskripsi(); refreshIcons();
+  toast(n? `${n} deskripsi dibuat${skip? ' — '+skip+' siswa dilewati (nilai kosong)':''}` : 'Tidak ada nilai untuk dibuat deskripsi', skip?'warn':'ok');
+}
+
+/* ================= VIEW: NILAI ================= */
+function vNilai(){
+  ui.nilaiKelas=curKelas(ui.nilaiKelas);
+  head('Input Nilai','Tersimpan otomatis & tersinkron ke server. Nilai akhir 0–100.', (isWali()? waliChip():'')+btn('Impor Nilai','impor-nilai','ghost','upload')+btn('Cetak Daftar Nilai','cetak-daftar-nilai','ghost','printer')+`<div class="lgx">${legendPredikat()}</div>`);
+  if(!ui.nilaiKelas){ $('#view').innerHTML=emptyKelas(); return }
+  const k=kelasById(ui.nilaiKelas);
+  if(!k.mapel.length){ $('#view').innerHTML=`<div class="card pad empty">Kelas ${esc(k.nama)} belum memiliki mapel.<div class="btnrow" style="justify-content:center;margin-top:12px"><button class="btn ghost sm" data-nav="kelas">Kelola Mapel</button></div></div>`; return }
+  const mp=k.mapel, sw=siswaOf(k.id);
+  const mth=mp.map(m=>`<th class="mth" title="${esc(m.nama)}">${esc(abbr(m.nama))}</th>`).join('');
+  const rows=sw.map(s=>`<tr><td class="num">${s.urutan}</td>
+    <td class="sticky-col"><b>${esc(s.nama)}</b></td>
+    ${mp.map(m=>{ const v=getNil(s.id,m.id);
+      return `<td><input type="number" min="0" max="100" class="ninp ${v==null?'pk':'p'+predVal(v)}" data-bind="nilai" data-sid="${s.id}" data-mid="${m.id}" value="${v??''}"></td>` }).join('')}
+    <td class="avg" id="avg-s-${s.id}">—</td></tr>`).join('');
+  const foot=`<tr><td></td><td class="sticky-col">Rata-rata mapel</td>
+    ${mp.map(m=>`<td class="avg" id="avg-m-${m.id}">—</td>`).join('')}<td class="avg" id="avg-k">—</td></tr>`;
+  const kelasCtl = isWali()
+    ? `<span class="chip ok">Wali Kelas — ${esc(k.nama)}</span>`
+    : `<label class="fld sm"><span>Kelas</span><select data-bind="ui-kelas" data-key="nilaiKelas">${kelasOptions(ui.nilaiKelas)}</select></label>`;
+  $('#view').innerHTML=`<div class="card ctl">
+    ${kelasCtl}
+    <div class="grow"><div class="prog-bar" style="height:12px"><div class="prog-fill" id="kprogFill"></div></div>
+    <div class="dim sm2" id="kprogLbl" style="margin-top:5px"></div></div>
+  </div>
+  <div class="card"><div class="kscroll"><table class="tbl ntblui">
+    <thead><tr><th style="width:34px">No</th><th class="sticky-col">Nama Siswa</th>${mth}<th>Rata</th></tr></thead>
+    <tbody>${rows}</tbody><tfoot>${foot}</tfoot></table></div></div>`;
+  recalcNilaiView();
+}
+function recalcNilaiView(){
+  if(ui.route!=='nilai'||!ui.nilaiKelas) return;
+  const mp=kelasById(ui.nilaiKelas)?.mapel||[], sw=siswaOf(ui.nilaiKelas);
+  let sum=0,cnt=0;
+  sw.forEach(s=>{ let ss=0,sc=0;
+    mp.forEach(m=>{ const v=getNil(s.id,m.id); if(v!=null){ss+=v;sc++;sum+=v;cnt++} });
+    const el=$('#avg-s-'+s.id); if(el) el.textContent= sc? (ss/sc).toFixed(1):'—'; });
+  mp.forEach(m=>{ const el=$('#avg-m-'+m.id); if(el){ let s2=0,c2=0;
+    sw.forEach(x=>{ const v=getNil(x.id,m.id); if(v!=null){s2+=v;c2++} });
+    el.textContent=c2?(s2/c2).toFixed(1):'—'; } });
+  const ak=$('#avg-k'); if(ak) ak.textContent=cnt?(sum/cnt).toFixed(1):'—';
+  const st=kelasStat(ui.nilaiKelas), bar=$('#kprogFill'), lbl=$('#kprogLbl');
+  if(bar){ bar.style.width=st.pct+'%' } if(lbl){ lbl.textContent=`${st.filled} dari ${st.total} nilai terisi (${st.pct}%)` }
+}
+
+/* ================= VIEW: EKSKUL ================= */
+function vEkskul(){
+  ui.ekskelas=curKelas(ui.ekskelas);
+  head('Ekstrakurikuler','Daftar kegiatan umum madrasah dan capaian tiap siswa (maks. 3 kegiatan).');
+  const chips=DB.ekskulList.map((x,i)=>`<span class="echip">${esc(x)}${isWali()? '' : `<button data-act="del-ekskul" data-i="${i}" title="Hapus dari daftar"><i data-lucide="x"></i></button>`}</span>`).join('')
+    || `<span class="dim">Belum ada kegiatan${isWali()? '' : ' — tambahkan di bawah'}.</span>`;
+  let tableHtml='';
+  if(ui.ekskelas){
+    const sw=siswaOf(ui.ekskelas);
+    const rows=sw.map(s=>{ const arr=eksArr(s.id);
+      return `<tr><td class="num">${s.urutan}</td><td style="min-width:168px"><b>${esc(s.nama)}</b></td>
+      ${[0,1,2].map(i=>`<td><div class="eslot">
+        <select data-bind="ekskul-nama" data-sid="${s.id}" data-i="${i}">
+          <option value="">—</option>
+          ${DB.ekskulList.map(x=>`<option ${x===arr[i].nama?'selected':''}>${esc(x)}</option>`).join('')}
+          ${arr[i].nama&&!DB.ekskulList.includes(arr[i].nama)?`<option selected>${esc(arr[i].nama)}</option>`:''}
+        </select>
+        <select data-bind="ekskul-pred" data-sid="${s.id}" data-i="${i}">
+          ${['','Sangat Baik','Baik','Cukup'].map(p=>`<option value="${p}" ${p===arr[i].predikat?'selected':''}>${p||'—'}</option>`).join('')}
+        </select>
+        <input data-bind="ekskul-ket" data-sid="${s.id}" data-i="${i}" value="${esc(arr[i].ket||'')}" placeholder="Keterangan…">
+      </div></td>`).join('')}</tr>` }).join('');
+    const kelasCtl = isWali()
+      ? `<span class="chip ok">Wali Kelas — ${esc(kelasById(ui.ekskelas)?.nama||'—')}</span>`
+      : `<label class="fld sm"><span>Kelas</span><select data-bind="ui-kelas" data-key="ekskelas">${kelasOptions(ui.ekskelas)}</select></label>`;
+    tableHtml=`<div class="card ctl">${kelasCtl}</div>
+    <div class="card"><div class="kscroll etable"><table class="tbl">
+      <thead><tr><th>No</th><th>Nama Siswa</th><th>Ekstrakurikuler 1</th><th>Ekstrakurikuler 2</th><th>Ekstrakurikuler 3</th></tr></thead>
+      <tbody>${rows||`<tr><td colspan="5" class="empty-cell">Belum ada siswa di kelas ini.</td></tr>`}</tbody></table></div></div>`;
+  } else tableHtml=emptyKelas();
+  $('#view').innerHTML=`<div class="card pad" style="margin-bottom:16px">
+    <div class="c-head"><h2>Daftar Kegiatan Umum</h2><span class="chip">${DB.ekskulList.length} kegiatan</span></div>
+    <div class="echips">${chips}</div>
+    ${isWali()? '' : `<div class="eadd"><input id="newEks" placeholder="Nama kegiatan baru, mis. Rebana / Paskibra">
+      <button class="btn primary sm" data-act="add-ekskul"><i data-lucide="plus"></i><span>Tambah</span></button></div>`}
+  </div>`+tableHtml;
+}
+
+/* ================= VIEW: ABSENSI & CATATAN ================= */
+function vAbsensi(){
+  ui.absKelas=curKelas(ui.absKelas);
+  head('Absensi & Catatan','Ketidakhadiran (hari), catatan wali kelas, tanggapan orang tua, dan keputusan akhir.');
+  if(!ui.absKelas){ $('#view').innerHTML=emptyKelas(); return }
+  const sw=siswaOf(ui.absKelas);
+  const rows=sw.map(s=>{ const ab=DB.absen[s.id]||{}, c=DB.catatan[s.id]||{};
+    const naik=c.naik==='naik'? `<span class="chip ok">Naik ke ${esc(c.naikKe||'…')}</span>`
+      : c.naik==='tinggal'? `<span class="chip bad">Tinggal kelas</span>` : `<span class="dim">—</span>`;
+    return `<tr><td class="num">${s.urutan}</td><td style="min-width:168px"><b>${esc(s.nama)}</b></td>
+      <td><input type="number" min="0" max="99" class="ainp" data-bind="absen" data-sid="${s.id}" data-f="sakit" value="${ab.sakit||0}"></td>
+      <td><input type="number" min="0" max="99" class="ainp" data-bind="absen" data-sid="${s.id}" data-f="izin" value="${ab.izin||0}"></td>
+      <td><input type="number" min="0" max="99" class="ainp" data-bind="absen" data-sid="${s.id}" data-f="alpa" value="${ab.alpa||0}"></td>
+      <td>${naik}</td>
+      <td class="row-acts"><button class="btn ghost sm" data-act="open-catatan" data-id="${s.id}"><i data-lucide="notebook-pen"></i><span>Catatan</span></button></td>
+    </tr>` }).join('');
+  const kelasCtl = isWali()
+    ? `<span class="chip ok">Wali Kelas — ${esc(kelasById(ui.absKelas)?.nama||'—')}</span>`
+    : `<label class="fld sm"><span>Kelas</span><select data-bind="ui-kelas" data-key="absKelas">${kelasOptions(ui.absKelas)}</select></label>`;
+  $('#view').innerHTML=`<div class="card ctl">${kelasCtl}
+    ${DB.settings.semester==='1'? '<span class="chip">Rapor ganjil — keputusan kenaikan tidak tercetak</span>':''}</div>
+  <div class="card"><div class="kscroll"><table class="tbl t-abs" style="min-width:880px">
+    <thead><tr><th>No</th><th>Nama Siswa</th><th>Sakit (hari)</th><th>Izin (hari)</th><th>Alpa (hari)</th><th>Keputusan</th><th></th></tr></thead>
+    <tbody>${rows||`<tr><td colspan="7" class="empty-cell">Belum ada siswa di kelas ini.</td></tr>`}</tbody></table></div></div>`;
+}
+function modalCatatan(sid){
+  const s=siswaById(sid), c=DB.catatan[sid]||{}, k=kelasById(s.kelasId), nl=nextLevel(k?.nama);
+  openModal(`<form id="fCat" class="mform">
+    <h3>${esc(s.nama)} <span class="chip" style="margin-left:6px">${esc(k?.nama||'')}</span></h3>
+    <label class="fld"><span>Catatan Wali Kelas</span><textarea name="catatan" rows="3" placeholder="Catatan perkembangan peserta didik…">${esc(c.catatan||'')}</textarea></label>
+    <div class="mgrid2">
+      <label class="fld"><span>Keputusan</span><select name="naik">
+        <option value="" ${!c.naik?'selected':''}>— (belum ditentukan)</option>
+        <option value="naik" ${c.naik==='naik'?'selected':''}>Naik Kelas</option>
+        <option value="tinggal" ${c.naik==='tinggal'?'selected':''}>Tinggal Kelas</option></select></label>
+      <label class="fld"><span>Kelas Tujuan</span><input name="naikKe" value="${esc(c.naikKe||nl||'')}" placeholder="mis. ${nl||'IX'}"></label>
+    </div>
+    <label class="fld" style="margin-top:12px"><span>Tanggapan Orang Tua/Wali</span><textarea name="tanggapan" rows="2">${esc(c.tanggapan||'')}</textarea></label>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="check"></i><span>Simpan</span></button></div>
+  </form>`,m=>{ $('#fCat',m).addEventListener('submit',e=>{ e.preventDefault();
+    const f=new FormData(e.target), o={}; f.forEach((v,k2)=>o[k2]=String(v).trim());
+    DB.catatan[sid]={catatan:o.catatan,tanggapan:o.tanggapan,naik:o.naik,naikKe:o.naikKe};
+    save(); m.remove(); render(); toast('Catatan tersimpan'); }) });
+}
+
+/* ================= VIEW: CETAK ================= */
+function vCetak(){
+  ui.cetakKelas=curKelas(ui.cetakKelas);
+  head('Cetak & Pratinjau Rapor','Pilih siswa, atur tampilan, lalu cetak dengan kertas A4.');
+  if(!ui.cetakKelas){ $('#view').innerHTML=emptyKelas(); return }
+  const sw=siswaOf(ui.cetakKelas);
+  if(!(ui.preview&&siswaById(ui.preview)&&siswaById(ui.preview).kelasId===ui.cetakKelas)) ui.preview=sw[0]?.id||null;
+  const s=ui.preview? siswaById(ui.preview):null;
+  const kurang=s? nilaiKurang(s):0;
+  const rows=sw.map(x=>{ const n=nilaiKurang(x);
+    return `<button class="cp-row ${x.id===ui.preview?'on':''}" data-act="preview-siswa" data-id="${x.id}">
+      <span class="cp-nama">${esc(x.nama)}</span>
+      <span class="chip ${n?'bad':'ok'}">${n? n+' kosong':'lengkap'}</span></button>` }).join('')
+    || `<div class="empty">Belum ada siswa di kelas ini.</div>`;
+  const kelasCtl = isWali()
+    ? `<span class="chip ok">Wali Kelas — ${esc(kelasById(ui.cetakKelas)?.nama||'—')}</span>`
+    : `<select data-bind="ui-kelas" data-key="cetakKelas">${kelasOptions(ui.cetakKelas)}</select>`;
+  $('#view').innerHTML=`<div class="cetak-grid">
+    <div class="card cplist">
+      <div class="cp-ctl"><label class="fld sm" style="flex:1"><span>Kelas</span>${kelasCtl}</label></div>
+      <div class="cp-list">${rows}</div>
+    </div>
+    <div class="cpview">
+      <div class="bar card">
+        <div class="bar-t">${s? `<b>${esc(s.nama)}</b><span class="chip ${kurang?'bad':'ok'}">${kurang? kurang+' nilai kosong':'nilai lengkap'}</span>` : '<span class="dim">Pilih siswa</span>'}</div>
+        <label class="switch"><input type="checkbox" data-bind="opt" data-f="stempel" ${DB.opts.stempel?'checked':''}><span></span>Stempel</label>
+        <label class="switch"><input type="checkbox" data-bind="opt" data-f="huruf" ${DB.opts.huruf?'checked':''}><span></span>Predikat huruf</label>
+        <label class="switch"><input type="checkbox" data-bind="setb" data-f="tampilRerata" ${DB.settings.tampilRerata!==false?'checked':''}><span></span>Rata-rata</label>
+        <label class="switch"><input type="checkbox" data-bind="setb" data-f="tampilRanking" ${DB.settings.tampilRanking!==false?'checked':''}><span></span>Peringkat</label>
+        <div class="bar-a">${btn('Cetak Rapor Ini','cetak-satu','primary','printer')}${btn('Cetak Semua Siswa','cetak-kelas','ghost','layers')}${btn('Cetak Leger','cetak-leger','ghost','trophy')}</div>
+      </div>
+      <div class="stage" id="stage">${s? `<div class="sheet-wrap">${raporHTML(s)}</div>` : '<div class="empty">Belum ada siswa untuk dipratinjau.</div>'}</div>
+    </div>
+  </div>`;
+}
+
+const BASE_TITLE=document.title;
+function doPrint(scope){
+  const ids= scope==='all'? siswaOf(ui.cetakKelas).map(s=>s.id) : [ui.preview].filter(Boolean);
+  if(!ids.length) return toast('Tidak ada siswa untuk dicetak','err');
+  $('#printArea').innerHTML=ids.map(id=>raporHTML(siswaById(id))).join('');
+  const s0=siswaById(ids[0]);
+  document.title='Rapor '+s0.nama.replace(/[^\w ]+/g,'')+(ids.length>1?' dkk':'');
+  window.print();
+}
+window.addEventListener('afterprint',()=>{ document.title=BASE_TITLE; $('#printArea').innerHTML='';
+  document.getElementById('dynPageL')?.remove(); document.body.classList.remove('print-lanskap'); });
+
+/* ================= VIEW: PENGATURAN ================= */
+function vPengaturan(){
+  if(isWali()){
+    head('Pengaturan','Akun Wali Kelas — pengaturan kata sandi dan sinkronisasi.');
+    $('#view').innerHTML=`<div class="pset">
+      <div class="card pad">
+        <div class="c-head"><h2>Kata Sandi Saya</h2></div>
+        <p class="dim" style="margin:0 0 12px">Anda masuk sebagai <b>${esc(ME.n)}</b> (Wali Kelas${kelasById(ME.kelasId)? ' · '+esc(kelasById(ME.kelasId).nama):''}). Pengaturan madrasah, pengguna, dan data dikelola oleh Admin/Operator.</p>
+        ${btn('Ganti Kata Sandi','my-pass','ghost','key-round')}
+      </div>
+      <div class="card pad">
+        <div class="c-head"><h2>Sinkronisasi</h2><span class="chip ${SYNC==='off'?'bad':'ok'}">${SYNC==='busy'?'Menyimpan…':SYNC==='off'?'Terputus':'Tersinkron'}</span></div>
+        <p class="dim" style="margin:0 0 12px">Data tersimpan di server madrasah (Google Sheet).${LAST_ERR? ' Kesalahan terakhir: <b>'+esc(LAST_ERR)+'</b>':''}</p>
+        ${btn('Tarik Ulang Data','refresh-data','ghost','refresh-cw')}
+      </div>
+    </div>`;
+    return;
+  }
+  head('Pengaturan & Backup','Rentang predikat, tampilan rapor, pengguna, server, dan cadangan data.');
+  const s=DB.settings, admin=isAdmin();
+  const stats=`${DB.kelas.length} kelas · ${DB.siswa.length} siswa · ${Object.keys(DB.nilai).length} nilai · ${Object.keys(DB.deskripsi).length} deskripsi`;
+  const serverCard=`<div class="card pad">
+    <div class="c-head"><h2>Server & Sinkronisasi</h2><span class="chip ${SYNC==='off'?'bad':'ok'}">${SYNC==='busy'?'Menyimpan…':SYNC==='off'?'Terputus':'Tersinkron'}</span></div>
+    <p class="dim" style="margin:0 0 10px">Database: Google Sheet (Apps Script) · rev ${REV}. ${LAST_ERR? 'Kesalahan terakhir: <b>'+esc(LAST_ERR)+'</b>':''} URL di bawah berlaku untuk perangkat ini; agar semua pengguna otomatis, tanam URL pada konstanta API_BAWAAN di berkas HTML.</p>
+    <label class="fld" style="margin-bottom:10px"><span>URL Web App</span><input id="apiUrl" value="${esc(apiURL())}" placeholder="https://script.google.com/macros/s/…/exec"></label>
+    <div class="btnrow">${btn('Simpan URL','save-api','ghost','save')}${btn('Uji Koneksi','ping-api','ghost','wifi')}${btn('Tarik Ulang Data','refresh-data','ghost','refresh-cw')}</div>
+  </div>`;
+  const userCard= admin? `<div class="card pad">
+    <div class="c-head"><h2>Pengguna & Kata Sandi</h2><span class="chip">${USERS.length} akun</span></div>
+    <div class="kscroll"><table class="tbl" style="min-width:560px"><thead><tr><th>Nama</th><th>Pengguna</th><th>Peran</th><th></th></tr></thead><tbody>
+      ${USERS.map(x=>`<tr>
+        <td><b>${esc(x.n)}</b>${x.u===ME.u? ' <span class="dim sm2">(anda)</span>':''}</td>
+        <td class="mono">${esc(x.u)}</td>
+        <td><span class="chip ${x.r==='admin'?'ok':''}">${roleLabel(x.r)}${x.r==='wali'&&x.kelasId? ' · '+esc(kelasById(x.kelasId)?.nama||'—'):''}</span></td>
+        <td class="row-acts">
+          <button class="ibtn" data-act="edit-user" data-u="${esc(x.u)}" title="Sunting pengguna"><i data-lucide="pencil"></i></button>
+          <button class="ibtn" data-act="edit-pass" data-u="${esc(x.u)}" title="Ganti sandi"><i data-lucide="key-round"></i></button>
+          ${x.u!==ME.u? `<button class="ibtn danger" data-act="del-user" data-u="${esc(x.u)}" title="Hapus"><i data-lucide="trash-2"></i></button>`:''}
+        </td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="c-foot"><button class="btn ghost sm" data-act="add-user"><i data-lucide="user-plus"></i><span>Tambah Pengguna</span></button></div>
+  </div>`:'';
+  const myPassCard=`<div class="card pad">
+    <div class="c-head"><h2>Kata Sandi Saya</h2></div>
+    <p class="dim" style="margin:0 0 12px">Anda masuk sebagai <b>${esc(ME.n)}</b> (${roleLabel(ME.r)}). Ganti kata sandi secara berkala.</p>
+    ${btn('Ganti Kata Sandi','my-pass','ghost','key-round')}
+  </div>`;
+  const dangerCard= admin? `<div class="card pad">
+    <div class="c-head"><h2>Data Contoh & Reset</h2></div>
+    <p class="dim" style="margin:0 0 12px">"Muat Data Contoh" mengganti seluruh data (di server) dengan data demo. "Kosongkan" menghapus semuanya. Semua perangkat lain akan melihat perubahan setelah menarik ulang data.</p>
+    <div class="btnrow">${btn('Muat Data Contoh','seed','ghost','database')}${btn('Kosongkan Semua Data','wipe','danger-outline','trash-2')}</div>
+  </div>`:'';
+  $('#view').innerHTML=`<div class="pset">
+    ${serverCard}
+    <div class="card pad">
+      <div class="c-head"><h2>Rentang Predikat Nilai</h2></div>
+      <p class="dim" style="margin:0 0 12px">Batas bawah tiap predikat. Nilai di bawah batas C otomatis menjadi D. Tersimpan saat diubah.</p>
+      <div class="pred-grid" id="legWrap">${legendPredikat()}</div>
+      <div class="pred-inputs">
+        <label class="fld"><span>A — minimal</span><input type="number" min="1" max="100" data-bind="pred" data-f="bA" value="${s.bA}"></label>
+        <label class="fld"><span>B — minimal</span><input type="number" min="1" max="100" data-bind="pred" data-f="bB" value="${s.bB}"></label>
+        <label class="fld"><span>C — minimal</span><input type="number" min="1" max="100" data-bind="pred" data-f="bC" value="${s.bC}"></label>
+      </div>
+    </div>
+    <div class="card pad">
+      <div class="c-head"><h2>Tampilan Rapor</h2></div>
+      <label class="switch" style="margin-bottom:10px"><input type="checkbox" data-bind="opt" data-f="stempel" ${DB.opts.stempel?'checked':''}><span></span> Tampilkan stempel madrasah</label>
+      <label class="switch"><input type="checkbox" data-bind="opt" data-f="huruf" ${DB.opts.huruf?'checked':''}><span></span> Tampilkan predikat huruf (A/B/C/D)</label>
+      <label class="switch" style="margin-top:10px"><input type="checkbox" data-bind="setb" data-f="tampilRerata" ${DB.settings.tampilRerata!==false?'checked':''}><span></span> Tampilkan rata-rata nilai di rapor</label>
+      <label class="switch"><input type="checkbox" data-bind="setb" data-f="tampilRanking" ${DB.settings.tampilRanking!==false?'checked':''}><span></span> Tampilkan peringkat kelas di rapor</label>
+    </div>
+    <div class="card pad">
+      <div class="c-head"><h2>Cadangan Data</h2></div>
+      <p class="dim" style="margin:0 0 12px">Data utama tersimpan di server (Google Sheet — juga dapat diunduh dari Drive). Berkas cadangan (.json) berguna untuk arsip luar atau memindahkan data. (${stats})</p>
+      <div class="btnrow">${btn('Unduh Cadangan (.json)','backup','primary','download')}${admin? btn('Pulihkan dari Cadangan','restore','ghost','upload'):''}</div>
+      ${admin? '<input type="file" id="restoreFile" accept="application/json,.json" hidden>':''}
+    </div>
+    ${myPassCard}
+    ${userCard}
+    ${dangerCard}
+  </div>`;
+  const rf=$('#restoreFile');
+  if(rf) rf.addEventListener('change',e=>{
+    const file=e.target.files[0]; if(!file) return;
+    const r=new FileReader();
+    r.onload=()=>{ try{ const obj=JSON.parse(r.result);
+        if(!obj||obj.v!==1||!Array.isArray(obj.kelas)||!Array.isArray(obj.siswa)||!obj.settings) throw new Error('struktur');
+        DB=obj; normalizeDB(); SHADOW=baselineDB(); SHADOW_USERS=clone(USERS);
+        save(); render(); toast('Data dipulihkan — sedang disinkronkan ke server');
+      }catch(err){ toast('Berkas cadangan tidak valid','err') } };
+    r.readAsText(file); e.target.value='';
+  });
+}
+function backup(){
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='rdm-mts-cadangan-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('Berkas cadangan diunduh');
+}
+
+/* ===== FITUR: cetak daftar nilai, leger, update siswa dari Excel ===== */
+function printLanskap(html,namaBerkas){
+  $('#printArea').innerHTML=html;
+  const st=document.createElement('style'); st.id='dynPageL';
+  st.textContent='@page{size:A4 landscape;margin:8mm}';
+  document.head.appendChild(st);
+  document.body.classList.add('print-lanskap');
+  if(namaBerkas) document.title=namaBerkas;
+  window.print();
+}
+function identitasLanskap_(k,judul){
+  const st=DB.settings;
+  return `<div class="kop1" style="text-align:center;font-size:13pt;font-weight:700">MTs ${esc(st.nama||'—')}</div>
+    <div style="text-align:center;font-size:9pt">${esc(st.alamat||'')}</div>
+    <div style="text-align:center;font-weight:700;font-size:12pt;margin:3mm 0 1mm">${judul}</div>
+    <table class="idn2" style="margin-bottom:2mm"><tr>
+      <td class="ik">Kelas</td><td>${esc(k.nama)}</td>
+      <td class="ik">Semester / TA</td><td>${st.semester==='2'?'Genap':'Ganjil'} / ${esc(st.tahun||'—')}</td>
+      <td class="ik">Wali Kelas</td><td>${esc(k.wali||'—')}</td></tr></table>`;
+}
+function ttdLanskap_(k){
+  return `<div class="ttd2">${esc(DB.settings.kota||'…………………')}, ${esc(DB.settings.tanggalRapor||'…………………')}<br>Wali Kelas,<div style="height:16mm"></div><b><u>${esc(k.wali||'………………………')}</u></b><br>NIP. ${esc(k.nipWali||'…………………')}</div>`;
+}
+function legendaMapel_(mp){
+  return `<div style="font-size:7.5pt;margin-top:2mm;color:#444">${mp.map(m=>`${esc(abbr(m.nama))} = ${esc(m.nama)}`).join(' · ')}</div>`;
+}
+function daftarNilaiHTML(kid){
+  const k=kelasById(kid); if(!k) return '';
+  const mp=k.mapel, sw=siswaOf(kid);
+  const th=mp.map(m=>`<th class="c" title="${esc(m.nama)}">${esc(abbr(m.nama))}</th>`).join('');
+  const rows=sw.map((s,i)=>{ const vals=mp.map(m=>{ const v=getNil(s.id,m.id); return v==null?'–':v });
+    return `<tr><td class="c">${i+1}</td><td class="c">${esc(s.nis||'—')}</td><td class="nm2">${esc(s.nama)}</td>${vals.map(v=>`<td class="c">${v}</td>`).join('')}<td class="c b">${fmtAngka(rerataSiswa(s))}</td></tr>` }).join('');
+  const foot=mp.map(m=>{ let s2=0,c2=0; sw.forEach(x=>{const v=getNil(x.id,m.id); if(v!=null){s2+=v;c2++}});
+    return `<td class="c b">${c2?(s2/c2).toFixed(1).replace('.',','):'—'}</td>` }).join('');
+  return `<div class="dnl">${identitasLanskap_(k,'DAFTAR NILAI PESERTA DIDIK')}
+    <table class="ltbl"><thead><tr><th class="c" style="width:8mm">No</th><th style="width:24mm">NIS</th><th style="min-width:48mm">Nama Siswa</th>${th}<th class="c" style="width:15mm">Rata²</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td colspan="3" style="text-align:right;font-weight:700">Rata-rata Mapel</td>${foot}<td></td></tr></tfoot></table>
+    ${legendaMapel_(mp)}${ttdLanskap_(k)}</div>`;
+}
+function legerHTML(kid){
+  const k=kelasById(kid); if(!k) return '';
+  const mp=k.mapel, sw=siswaOf(kid);
+  const rank=sw.filter(s=>siswaLengkap(s)).map(s=>({s,r:rerataSiswa(s)})).sort((a,b)=>b.r-a.r);
+  const posisi=new Map(rank.map((x,i)=>[x.s.id,i+1]));
+  const th=mp.map(m=>`<th class="c" title="${esc(m.nama)}">${esc(abbr(m.nama))}</th>`).join('');
+  const rows=sw.map((s,i)=>{ const vals=mp.map(m=>{ const v=getNil(s.id,m.id); return v==null?'–':v });
+    const pk=posisi.get(s.id);
+    return `<tr><td class="c">${i+1}</td><td class="c">${esc(s.nis||'—')}</td><td class="nm2">${esc(s.nama)}</td>${vals.map(v=>`<td class="c">${v}</td>`).join('')}<td class="c b">${fmtAngka(rerataSiswa(s))}</td><td class="c b">${pk?'Ke-'+pk:'—'}</td></tr>` }).join('');
+  const foot=mp.map(m=>{ let s2=0,c2=0; sw.forEach(x=>{const v=getNil(x.id,m.id); if(v!=null){s2+=v;c2++}});
+    return `<td class="c b">${c2?(s2/c2).toFixed(1).replace('.',','):'—'}</td>` }).join('');
+  return `<div class="dnl">${identitasLanskap_(k,'LEGER NILAI STS DAN PERINGKAT KELAS')}
+    <table class="ltbl"><thead><tr><th class="c" style="width:8mm">No</th><th style="width:24mm">NIS</th><th style="min-width:46mm">Nama Siswa</th>${th}<th class="c" style="width:15mm">Rata²</th><th class="c" style="width:16mm">Peringkat</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td colspan="3" style="text-align:right;font-weight:700">Rata-rata Mapel</td>${foot}<td colspan="2"></td></tr></tfoot></table>
+    ${legendaMapel_(mp)}<div style="font-size:7.5pt;margin-top:1mm;color:#444">Peringkat dihitung dari rata-rata seluruh mapel; siswa dengan nilai belum lengkap belum mendapat peringkat.</div>
+    ${ttdLanskap_(k)}</div>`;
+}
+function cetakDaftarNilai(){
+  const k=kelasById(ui.nilaiKelas);
+  if(!k){ toast('Pilih kelas terlebih dahulu','err'); return }
+  if(!k.mapel.length){ toast('Kelas belum memiliki mapel','err'); return }
+  printLanskap(daftarNilaiHTML(k.id),'Daftar Nilai '+k.nama);
+}
+function cetakLeger(){
+  const k=kelasById(ui.cetakKelas);
+  if(!k){ toast('Pilih kelas terlebih dahulu','err'); return }
+  if(!k.mapel.length){ toast('Kelas belum memiliki mapel','err'); return }
+  printLanskap(legerHTML(k.id),'Leger '+k.nama);
+}
+function parseUpdateSiswa(text,kelasId){
+  if(!DB||!Array.isArray(DB.siswa)){
+    toast('Data aplikasi belum siap — muat ulang halaman (Ctrl+Shift+R)','err');
+    return {rows:[],takDikenal:[],tanpaNama:[]};
+  }
+  const lines=String(text||'').split(/\r?\n/).filter(l=>l.trim());
+  const cells=lines.map(l=> l.indexOf('\t')>=0? l.split('\t') : (l.indexOf(';')>=0? l.split(';') : [l]))
+    .map(r=>r.map(c=>c.trim()));
+  const URUTAN=['nama','nis','nisn','jk','tempatLahir','tglLahir','agama','ayah','ibu','alamat'];
+  let kolom=URUTAN, start=0;
+  const first=cells[0]||[];
+  if(first.length>1){ const mapped=first.map(kolomSiswa_);
+    if(mapped.filter(Boolean).length>=2){ kolom=mapped; start=1 } }
+  const scope= isWali()? ME.kelasId : null;
+  const rows=[], takDikenal=[], tanpaNama=[];
+  for(let i=start;i<cells.length;i++){
+    const r=cells[i]; if(!r||!r.some(c=>c)) continue;
+    const o={};
+    r.forEach((c,j)=>{ const k=kolom[j]; if(!k||!c) return;
+      if(k==='jk') o.jk=normJK_(c);
+      else if(k==='tglLahir'){ const d=normTanggal_(c); if(d) o.tglLahir=d }
+      else if(k==='ttl'){ const p=c.split(','); o.tempatLahir=(p[0]||'').trim();
+        const d=normTanggal_(p[1]||''); if(d) o.tglLahir=d }
+      else o[k]=c; });
+    const kNis=String(o.nis||'').trim(), kNisn=String(o.nisn||'').trim(), kNama=normNama_(o.nama||'');
+    if(!kNis&&!kNisn&&!kNama){ tanpaNama.push(r[0]||'(kosong)'); continue }
+    let s=null;
+    if(kNisn) s=DB.siswa.find(x=>String(x.nisn||'')===kNisn&&(!scope||x.kelasId===scope));
+    if(!s&&kNis) s=DB.siswa.find(x=>String(x.nis||'')===kNis&&(!scope||x.kelasId===scope));
+    if(!s&&kNama&&kelasId) s=DB.siswa.find(x=>x.kelasId===kelasId&&normNama_(x.nama)===kNama);
+    if(!s){ takDikenal.push(o.nama||kNis||kNisn); continue }
+    rows.push({s,o});
+  }
+  return {rows, takDikenal, tanpaNama};
+}
+function modalUpdateSiswa(){
+  const defK= isWali()? ME.kelasId : kelasAkses()[0]?.id;
+  if(!kelasById(defK)){ toast('Pilih kelas terlebih dahulu','err'); return }
+  const kelasCtl= isWali()
+    ? `<label class="fld"><span>Kelas</span><span class="chip ok" style="margin-top:4px">Wali Kelas — ${esc(kelasById(defK)?.nama||'—')}</span></label>`
+    : `<label class="fld"><span>Kelas (untuk pencocokan nama)</span><select id="upKelas">
+        ${kelasAkses().map(k=>`<option value="${k.id}" ${k.id===defK?'selected':''}>${esc(k.nama)}</option>`).join('')}</select></label>`;
+  openModal(`<form id="fUpS" class="mform">
+    <h3>Update Data Siswa dari Excel</h3>
+    <div style="margin:0 0 12px">${kelasCtl}</div>
+    <p class="dim" style="margin:0 0 12px">Baris <b>judul kolom wajib ada</b> (Nama, NIS, NISN, L/P, Tempat Lahir, Tanggal Lahir, Agama, Ayah, Ibu, Alamat — urutan bebas). Siswa dicocokkan lewat <b>NISN → NIS → nama (di kelas terpilih)</b>. Kolom yang kosong tidak menimpa data lama.</p>
+    <label class="fld"><span>Tempel Data</span>
+      <textarea id="upSiswa" rows="10" placeholder="Nama&#9;NISN&#9;Nama Ayah&#10;Ahmad Fulan&#9;0051234567&#9;Hendra Gunawan"></textarea></label>
+    <div class="btnrow" style="margin-top:8px">
+      <button type="button" class="btn ghost sm" id="upSFileBtn"><i data-lucide="file-up"></i><span>Pilih Berkas CSV/TXT</span></button>
+      <input type="file" id="upSFile" accept=".csv,.txt,text/csv,text/plain" hidden>
+    </div>
+    <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+    <button class="btn primary" type="submit"><i data-lucide="refresh-cw"></i><span>Pratinjau Update</span></button></div>
+  </form>`,m=>{
+    $('#upSFileBtn',m).onclick=()=>$('#upSFile',m).click();
+    $('#upSFile',m).addEventListener('change',e=>{ const f=e.target.files[0]; e.target.value=''; if(!f) return;
+      const r=new FileReader(); r.onload=()=>{ $('#upSiswa',m).value=String(r.result||'') }; r.readAsText(f); });
+    $('#fUpS',m).addEventListener('submit',ev=>{ ev.preventDefault();
+      const kid= isWali()? defK : ($('#upKelas',m)?.value||defK);
+      const res=parseUpdateSiswa($('#upSiswa',m).value, kid);
+      if(!res.rows.length){ toast('Tidak ada siswa yang cocok — periksa NISN/NIS/nama','err'); return }
+      if(res.tanpaNama.length) toast(res.tanpaNama.length+' baris dilewati (tanpa kunci pencocokan)','warn');
+      openModal(`<div class="mform"><h3>Konfirmasi Update</h3>
+        <p class="dim" style="margin:0 0 6px"><b>${res.rows.length} siswa</b> akan diperbarui datanya (kolom yang kosong di Excel tidak menimpa).</p>
+        <p class="dim sm2" style="margin:0 0 6px">Contoh: ${res.rows.slice(0,3).map(x=>esc(x.s.nama)).join(', ')}${res.rows.length>3?' …':''}</p>
+        ${res.takDikenal.length? `<p class="chip bad" style="margin:0 0 6px">${res.takDikenal.length} tidak ditemukan: ${esc(res.takDikenal.slice(0,3).join(', '))}${res.takDikenal.length>3?' …':''}</p>`:''}
+        <div class="mfoot"><button type="button" class="btn ghost" data-act="close-modal">Batal</button>
+        <button type="button" class="btn primary" id="upSGo"><i data-lucide="check"></i><span>Terapkan</span></button></div></div>`,
+        m2=>{ $('#upSGo',m2).onclick=()=>{
+          res.rows.forEach(({s,o})=>Object.assign(s,o));
+          save(); m.remove(); m2.remove(); render();
+          toast(res.rows.length+' data siswa diperbarui'); } });
+    });
+  });
+}
+
+/* ================= EVENT GLOBAL ================= */
+const ADMIN_ONLY=new Set(['seed','wipe','restore','add-user','del-user','edit-pass','edit-user']);
+const WALI_DENIED=new Set(['add-kelas','del-kelas','add-mapel','del-mapel','logo-upload','logo-upload2','logo-del','logo-del2','art-upload','art-del','art-url','add-ekskul','del-ekskul','backup']);
+const deskTimers={};
+function onInput(t){
+  if(!t||!t.dataset) return;
+  const b=t.dataset.bind; if(!b) return;
+  if(b==='ui-q'){ ui.q=t.value; debRows(); }
+  else if(b==='ui-kelas'){ const key=t.dataset.key; ui[key]=t.value;
+    if(isWali()&&key!=='deskMapel'&&ui[key]!==ME.kelasId){ ui[key]=ME.kelasId; toast('Wali Kelas hanya dapat membuka kelasnya','warn'); }
+    if(key==='cetakKelas') ui.preview=siswaOf(ui.cetakKelas)[0]?.id||null;
+    if(key==='deskKelas') ui.deskMapel=kelasById(ui.deskKelas)?.mapel[0]?.id||null;
+    render(); }
+  else if(b==='nilai'){
+    const key=nilKey(t.dataset.sid,t.dataset.mid);
+    if(t.value.trim()===''){ delete DB.nilai[key]; t.classList.remove('pA','pB','pC','pD'); t.classList.add('pk'); }
+    else{ const n=+t.value; if(isNaN(n)) return;
+      const v=Math.max(0,Math.min(100,Math.round(n))); DB.nilai[key]=v;
+      t.classList.remove('pk','pA','pB','pC','pD'); t.classList.add('p'+predVal(v)); }
+    save(); recalcNilaiView(); }
+  else if(b==='deskripsi'){
+    const key=nilKey(t.dataset.sid,t.dataset.mid);
+    clearTimeout(deskTimers[key]);
+    deskTimers[key]=setTimeout(()=>{
+      if(t.value.trim()) DB.deskripsi[key]=t.value.trim(); else delete DB.deskripsi[key];
+      save(); const fl=t.closest('.desk-row')?.querySelector('.saveflag');
+      if(fl){ fl.classList.add('on'); setTimeout(()=>fl.classList.remove('on'),1200) }
+      updateDeskCount();
+    },600); }
+  else if(b==='mapel-nama'){ const m=mapelById(t.dataset.kid,t.dataset.mid); if(m){ m.nama=t.value; save() } }
+  else if(b==='kelas-nama'){ const k=kelasById(t.dataset.kid); if(k){ k.nama=t.value; save() } }
+  else if(b==='kelas-wali'){ const k=kelasById(t.dataset.kid); if(k){ k.wali=t.value; save() } }
+  else if(b==='kelas-nip'){ const k=kelasById(t.dataset.kid); if(k){ k.nipWali=t.value; save() } }
+  else if(b==='absen'){ const sid=t.dataset.sid, v=Math.max(0,Math.min(365,Math.round(+t.value||0)));
+    DB.absen[sid]=DB.absen[sid]||{}; DB.absen[sid][t.dataset.f]=v; save(); }
+  else if(b==='ekskul-nama'||b==='ekskul-pred'||b==='ekskul-ket'){
+    const sid=t.dataset.sid, i=+t.dataset.i, arr=eksArr(sid);
+    arr[i][ b==='ekskul-nama'?'nama' : b==='ekskul-pred'?'predikat' : 'ket' ]=t.value; save(); }
+  else if(b==='pred'){ const f=t.dataset.f;
+    const v=Math.max(1,Math.min(100,Math.round(+t.value||0)));
+    DB.settings[f]=v; save();
+    const lw=$('#legWrap'); if(lw) lw.innerHTML=legendPredikat(); }
+  else if(b==='setb'){ DB.settings[t.dataset.f]=t.checked; save();
+    if(ui.route==='cetak'&&$('#stage')){ const s=ui.preview? siswaById(ui.preview):null;
+      $('#stage').innerHTML= s? `<div class="sheet-wrap">${raporHTML(s)}</div>`:'<div class="empty">Belum ada siswa.</div>';
+      fitSheets(); } }
+  else if(b==='opt'){ DB.opts[t.dataset.f]=t.checked; save();
+    if(ui.route==='cetak'&&$('#stage')){ const s=ui.preview? siswaById(ui.preview):null;
+      $('#stage').innerHTML= s? `<div class="sheet-wrap">${raporHTML(s)}</div>`:'<div class="empty">Belum ada siswa.</div>';
+      fitSheets(); } }
+}
+document.addEventListener('input',e=>onInput(e.target));
+document.addEventListener('change',e=>{ const t=e.target; if(!t.dataset) return;
+  if(t.dataset.bind==='nilai'){ const v=DB.nilai[nilKey(t.dataset.sid,t.dataset.mid)]; t.value=v==null?'':v; }
+  else if(t.dataset.bind&&t.dataset.bind.startsWith('ui-')) onInput(t);
+});
+
+document.addEventListener('click',async e=>{
+  const nav=e.target.closest('[data-nav]');
+  if(nav){ const r=nav.dataset.nav; let a=nav.dataset.arg;
+    if(isWali()&&a&&r!=='deskripsi') a=ME.kelasId;
+    if(a){ if(r==='nilai') ui.nilaiKelas=a;
+      else if(r==='deskripsi'){ ui.deskKelas=isWali()? ME.kelasId : a; ui.deskMapel=kelasById(ui.deskKelas)?.mapel[0]?.id||null; }
+      else if(r==='ekskul') ui.ekskelas=a;
+      else if(r==='absensi') ui.absKelas=a;
+      else if(r==='cetak'){ ui.cetakKelas=a; ui.preview=siswaOf(a)[0]?.id||null; } }
+    if(r==='goto-cetak'){ ui.route='cetak'; } else ui.route=r;
+    document.body.classList.remove('nav-open');
+    render(); return; }
+  const el=e.target.closest('[data-act]'); if(!el) return;
+  const d=el.dataset;
+  if(ADMIN_ONLY.has(d.act)&&!isAdmin()){ toast('Aksi ini hanya tersedia untuk Admin','err'); return }
+  if(isWali()&&WALI_DENIED.has(d.act)){ toast('Aksi ini tidak tersedia untuk Wali Kelas','err'); return }
+  try{ switch(d.act){
+    case 'logout': api('logout').catch(()=>{}); sesiHabis('Anda telah keluar. Barakallahu fiik'); break;
+    case 'close-modal': el.closest('.overlay')?.remove(); break;
+    case 'goto-cetak': ui.route='cetak'; document.body.classList.remove('nav-open'); render(); break;
+    case 'refresh-data': pullData(true); break;
+    case 'ping-api': toast('Menguji koneksi…','warn');
+      try{ const r=await api('ping'); toast('Terhubung ke server — rev '+r.rev) }catch(err){ toast(err.message,'err') } break;
+    case 'save-api': { const v=$('#apiUrl')?.value.trim();
+      if(!v){ toast('Isi URL server terlebih dahulu','err'); break }
+      localStorage.setItem(SK_API,v); toast('URL server disimpan untuk perangkat ini'); break; }
+    case 'logo-upload': $('#logoFile')?.click(); break;
+    case 'logo-upload2': $('#logoFile2')?.click(); break;
+    case 'logo-del': if(await confirmDialog({title:'Hapus logo madrasah', message:'Logo madrasah (posisi kanan kop) akan dihapus dari rapor.'})){
+        DB.settings.logo=''; save(); vIdentitas(); refreshIcons(); toast('Logo madrasah dihapus'); } break;
+    case 'logo-del2': if(await confirmDialog({title:'Hapus lambang Kemenag', message:'Lambang Kemenag (posisi kiri kop) akan dihapus dari rapor.'})){
+        DB.settings.logo2=''; save(); vIdentitas(); refreshIcons(); toast('Lambang Kemenag dihapus'); } break;
+    case 'art-upload': $('#artFile')?.click(); break;
+    case 'art-del': if(await confirmDialog({title:'Hapus ilustrasi login', message:'Ilustrasi akan kembali ke gambar masjid bawaan.'})){
+        DB.settings.artLogin=''; save(); vIdentitas(); refreshIcons(); toast('Ilustrasi login dihapus'); } break;
+    case 'art-url': { const inp=$('#artUrl'); const v=(inp? inp.value.trim():'');
+      if(!/^(https?:|data:image\/)/i.test(v)){ toast('Masukkan URL gambar (https://…) atau data URL (data:image/…)','err'); break }
+      DB.settings.artLogin=v; save(); vIdentitas(); refreshIcons(); toast('Ilustrasi login tersimpan'); } break;
+    case 'add-kelas': modalKelas(); break;
+    case 'add-mapel': modalMapel(d.kid); break;
+    case 'del-kelas': { const k=kelasById(d.kid);
+      if(await confirmDialog({title:'Hapus kelas '+k.nama, message:'Semua siswa, nilai, dan data rapor pada kelas ini juga akan dihapus permanen (termasuk di server). Akun Wali Kelas terikat kelas ini akan dilepas.'})){
+        siswaOf(k.id).forEach(s=>cleanSiswa(s.id));
+        DB.siswa=DB.siswa.filter(s=>s.kelasId!==k.id);
+        DB.kelas=DB.kelas.filter(x=>x.id!==k.id);
+        USERS.forEach(x=>{ if(x.kelasId===d.kid) x.kelasId=null }); saveUsers();
+        save(); render(); toast('Kelas dihapus'); } break; }
+    case 'del-mapel': { const k=kelasById(d.kid), m=k.mapel.find(x=>x.id===d.mid);
+      if(await confirmDialog({title:'Hapus mapel', message:`Nilai dan deskripsi mapel <b>${esc(m.nama)}</b> akan ikut terhapus.`})){
+        k.mapel=k.mapel.filter(x=>x.id!==d.mid); cleanMapel(d.mid); save(); render(); toast('Mapel dihapus'); } break; }
+    case 'mapel-up': case 'mapel-down': { const k=kelasById(d.kid);
+      const i=k.mapel.findIndex(m=>m.id===d.mid), j=d.act==='mapel-up'? i-1:i+1;
+      if(j>=0&&j<k.mapel.length){ [k.mapel[i],k.mapel[j]]=[k.mapel[j],k.mapel[i]]; save(); render(); } break; }
+    case 'add-siswa': if(!DB.kelas.length){ toast('Buat kelas terlebih dahulu','err'); ui.route='kelas'; render(); break }
+      modalSiswa(); break;
+    case 'edit-siswa': modalSiswa(d.id); break;
+    case 'rapikan-nomor': { const targets= isWali()? [ME.kelasId]
+        : (ui.filterKelas!=='all'? [ui.filterKelas] : kelasAkses().map(k=>k.id));
+      targets.forEach(renumberKelas); save(); updateSiswaRows();
+      toast('Nomor urut dirapikan ('+targets.length+' kelas)'); break; }
+    case 'impor-siswa': if(!DB.kelas.length){ toast('Buat kelas terlebih dahulu','err'); break } modalImpor(); break;
+    case 'del-siswa': { const s=siswaById(d.id);
+      if(await confirmDialog({title:'Hapus siswa', message:`Seluruh data rapor <b>${esc(s.nama)}</b> akan dihapus permanen.`})){
+        cleanSiswa(s.id); DB.siswa=DB.siswa.filter(x=>x.id!==s.id);
+        renumberKelas(s.kelasId);
+        save(); ui.route==='siswa'? updateSiswaRows(): render(); toast('Siswa dihapus — nomor urut dirapikan'); } break; }
+    case 'siswa-up': case 'siswa-down': { const s=siswaById(d.id);
+      const sorted=siswaOf(s.kelasId), i=sorted.findIndex(x=>x.id===s.id), j=d.act==='siswa-up'? i-1:i+1;
+      if(j>=0&&j<sorted.length){ const tmp=sorted[i].urutan; sorted[i].urutan=sorted[j].urutan; sorted[j].urutan=tmp;
+        save(); updateSiswaRows(); } break; }
+    case 'print-siswa': { const s=siswaById(d.id);
+      if(s){ if(isWali()&&s.kelasId!==ME.kelasId){ toast('Wali Kelas hanya dapat mencetak rapor kelasnya','err'); break }
+        ui.cetakKelas=s.kelasId; ui.preview=s.id; ui.route='cetak'; render(); } break; }
+    case 'preview-siswa': ui.preview=d.id; render(); break;
+    case 'impor-nilai': modalImporNilai(); break;
+    case 'gen-desk-all': genDeskAll(); break;
+    case 'gen-desk-one': { const s=siswaById(d.id), m=mapelById(ui.deskKelas,ui.deskMapel);
+      if(s&&m){ const v=getNil(s.id,m.id);
+        if(v==null){ toast('Nilai siswa ini belum diisi','err'); break }
+        DB.deskripsi[nilKey(s.id,m.id)]=autoDesk(s.nama,m.nama,v);
+        save(); vDeskripsi(); refreshIcons(); toast('Deskripsi dibuat'); } break; }
+    case 'add-ekskul': { const inp=$('#newEks'), v=inp? inp.value.trim():'';
+      if(!v) break; if(DB.ekskulList.includes(v)){ toast('Kegiatan sudah ada','err'); break }
+      DB.ekskulList.push(v); save(); vEkskul(); refreshIcons(); toast('Kegiatan ditambahkan'); break; }
+    case 'del-ekskul': DB.ekskulList.splice(+d.i,1); save(); vEkskul(); refreshIcons(); break;
+    case 'open-catatan': modalCatatan(d.id); break;
+    case 'cetak-daftar-nilai': cetakDaftarNilai(); break;
+    case 'cetak-leger': cetakLeger(); break;
+    case 'update-siswa': modalUpdateSiswa(); break;	
+    case 'cetak-satu': doPrint('satu'); break;
+    case 'cetak-kelas': doPrint('all'); break;
+    case 'backup': backup(); break;
+    case 'restore': $('#restoreFile')?.click(); break;
+    case 'add-user': modalAddUser(); break;
+    case 'edit-user': modalEditUser(d.u); break;
+    case 'del-user': { const usr=USERS.find(x=>x.u===d.u);
+      if(!usr) break;
+      if(usr.r==='admin'&&USERS.filter(x=>x.r==='admin').length<=1){ toast('Minimal harus tersisa satu Admin','err'); break }
+      if(await confirmDialog({title:'Hapus pengguna', message:`Akun <b>${esc(usr.n)}</b> (${esc(usr.u)}) akan dihapus.`})){
+        USERS=USERS.filter(x=>x.u!==d.u); saveUsers(); vPengaturan(); refreshIcons(); toast('Pengguna dihapus'); } break; }
+    case 'edit-pass': modalPass(d.u,false); break;
+    case 'my-pass': modalPass(ME.u,true); break;
+    case 'seed': if(await confirmDialog({title:'Muat Data Contoh', message:'Seluruh data saat ini (di server) akan <b>diganti</b> dengan data contoh. Lanjutkan?', ok:'Muat Contoh'})){
+        DB=seedData(); save(); render(); toast('Data contoh dimuat — sedang disinkronkan'); } break;
+    case 'wipe': if(await confirmDialog({title:'Kosongkan Semua Data', message:'Seluruh kelas, siswa, nilai, dan pengaturan akan dihapus dari server. Tindakan ini tidak dapat dibatalkan.', ok:'Kosongkan'})){
+        DB=blankDB(); save(); render(); toast('Semua data dikosongkan'); } break;
+  } }catch(err){ console.error(err) }
+  refreshIcons();
+});
+
+/* Buka/tutup menu drawer (layar kecil) */
+ $('#navBtn').addEventListener('click',()=>document.body.classList.toggle('nav-open'));
+ $('#veil').addEventListener('click',()=>document.body.classList.remove('nav-open'));
+
+/* ================= INIT ================= */
+(function init(){
+  load();
+  let ses=null; try{ ses=JSON.parse(localStorage.getItem(SK_SESI)||'null') }catch(e){}
+  if(ses&&ses.token){
+    SESSION=ses; ME=(USERS||[]).find(x=>x.u===ses.u)||null;
+    if(DB){ $('#app').style.display=''; bootApp(true); pullData(false); }
+    else{ pullData(false).then(ok=>{ if(ok){ $('#app').style.display=''; bootApp(true) } else sesiHabis('Tidak dapat memuat data — periksa koneksi lalu login ulang') }) }
+  } else {
+    $('#app').style.display='none'; $('#loginScreen').classList.remove('hidden');
+    isiIdentitasLogin(); refreshIcons();
+  }
+})();
+</script>
+</body>
+</html>
